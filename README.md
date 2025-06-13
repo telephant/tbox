@@ -1,84 +1,54 @@
-# Turborepo starter
+# 🧰 TBOX
 
-This Turborepo starter is maintained by the Turborepo core team.
+> A personal toolkit for building an easier, more organized life.
 
-## Using this example
+Welcome to TBOX – a collection of practical tools designed to simplify everyday tasks and help you stay on top of what matters most.
 
-Run the following command:
+## 🛠️ Tools
 
-```sh
-npx create-turbo@latest
-```
+### [🍎 NutriLoop](./apps/nutriloop)
+**Smart Nutrition Tracking Made Simple**
 
-## What's inside?
+Track your daily nutrition with AI-powered food recognition and intelligent insights. Features multi-language support (English/Chinese), offline storage, and customizable daily goals.
 
-This Turborepo includes the following packages/apps:
+- ✨ AI-powered nutrition extraction
+- 🌍 Multi-language support (EN/中文)
+- 📱 Works offline with local storage
+- 🎯 Customizable daily nutrition goals
+- 📊 Visual progress tracking
 
-### Apps and Packages
+---
 
-- `docs`: a [Next.js](https://nextjs.org/) app
-- `web`: another [Next.js](https://nextjs.org/) app
-- `@repo/ui`: a stub React component library shared by both `web` and `docs` applications
-- `@repo/eslint-config`: `eslint` configurations (includes `eslint-config-next` and `eslint-config-prettier`)
-- `@repo/typescript-config`: `tsconfig.json`s used throughout the monorepo
+## 🚀 Getting Started
 
-Each package/app is 100% [TypeScript](https://www.typescriptlang.org/).
+Each tool is self-contained and can be run independently. Navigate to the specific tool directory for detailed setup instructions.
 
-### Utilities
+```bash
+# Clone the repository
+git clone <repository-url>
+cd tbox
 
-This Turborepo has some additional tools already setup for you:
+# Install dependencies
+pnpm install
 
-- [TypeScript](https://www.typescriptlang.org/) for static type checking
-- [ESLint](https://eslint.org/) for code linting
-- [Prettier](https://prettier.io) for code formatting
-
-### Build
-
-To build all apps and packages, run the following command:
-
-```
-cd my-turborepo
-pnpm build
-```
-
-### Develop
-
-To develop all apps and packages, run the following command:
-
-```
-cd my-turborepo
+# Run a specific tool (example: NutriLoop)
+cd apps/nutriloop
 pnpm dev
 ```
 
-### Remote Caching
+## 🎯 Philosophy
 
-> [!TIP]
-> Vercel Remote Cache is free for all plans. Get started today at [vercel.com](https://vercel.com/signup?/signup?utm_source=remote-cache-sdk&utm_campaign=free_remote_cache).
+TBOX is built on the principle that great tools should be:
+- **Simple** - Easy to understand and use
+- **Practical** - Solve real everyday problems
+- **Personal** - Adaptable to individual needs
+- **Private** - Your data stays with you
 
-Turborepo can use a technique known as [Remote Caching](https://turborepo.com/docs/core-concepts/remote-caching) to share cache artifacts across machines, enabling you to share build caches with your team and CI/CD pipelines.
+## 🤝 Contributing
 
-By default, Turborepo will cache locally. To enable Remote Caching you will need an account with Vercel. If you don't have an account you can [create one](https://vercel.com/signup?utm_source=turborepo-examples), then enter the following commands:
+Have an idea for a new tool or improvement? Contributions are welcome! Each tool maintains its own documentation and contribution guidelines.
 
-```
-cd my-turborepo
-npx turbo login
-```
+---
 
-This will authenticate the Turborepo CLI with your [Vercel account](https://vercel.com/docs/concepts/personal-accounts/overview).
-
-Next, you can link your Turborepo to your Remote Cache by running the following command from the root of your Turborepo:
-
-```
-npx turbo link
-```
-
-## Useful Links
-
-Learn more about the power of Turborepo:
-
-- [Tasks](https://turborepo.com/docs/crafting-your-repository/running-tasks)
-- [Caching](https://turborepo.com/docs/crafting-your-repository/caching)
-- [Remote Caching](https://turborepo.com/docs/core-concepts/remote-caching)
-- [Filtering](https://turborepo.com/docs/crafting-your-repository/running-tasks#using-filters)
-- [Configuration Options](https://turborepo.com/docs/reference/configuration)
-- [CLI Usage](https://turborepo.com/docs/reference/command-line-reference)
+*Building tools that make life a little bit easier, one app at a time.*
+  
