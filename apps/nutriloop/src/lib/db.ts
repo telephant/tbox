@@ -1,0 +1,143 @@
+import { openDB, DBSchema, IDBPDatabase } from 'idb';
+import { FoodEntry, DailyLimits, FoodCache } from './types';
+
+interface DailyLimitsRecord extends DailyLimits {
+  id: string;
+}
+
+interface NutriLoopDB extends DBSchema {
+  foodEntries: {
+    key: string;
+    value: FoodEntry;
+    indexes: { 'by-date': string };
+  };
+  dailyLimits: {
+    key: string;
+    value: DailyLimitsRecord;
+  };
+  foodCache: {
+    key: string;
+    value: FoodCache;
+    indexes: { 'by-name': string };
+  };
+}
+
+class DatabaseService {
+  private db: IDBPDatabase<NutriLoopDB> | null = null;
+
+  async init(): Promise<void> {
+    if (this.db) return;
+
+    this.db = await openDB<NutriLoopDB>('nutriloop-db', 2, {
+      upgrade(db, oldVersion) {
+        if (oldVersion < 1) {
+          // Food entries store
+          const foodStore = db.createObjectStore('foodEntries', {
+            keyPath: 'id',
+          });
+          foodStore.createIndex('by-date', 'date');
+
+          // Daily limits store
+          db.createObjectStore('dailyLimits', {
+            keyPath: 'id',
+          });
+
+          // Food cache store
+          const cacheStore = db.createObjectStore('foodCache', {
+            keyPath: 'id',
+          });
+          cacheStore.createIndex('by-name', 'name');
+        }
+
+        if (oldVersion < 2) {
+          // Migration for adding unit field to existing food entries
+          // This will be handled at runtime when reading entries
+        }
+      },
+    });
+  }
+
+  async addFoodEntry(entry: Omit<FoodEntry, 'id' | 'createdAt'>): Promise<FoodEntry> {
+    await this.init();
+    const foodEntry: FoodEntry = {
+      ...entry,
+      id: crypto.randomUUID(),
+      createdAt: new Date(),
+    };
+    
+    await this.db!.add('foodEntries', foodEntry);
+    return foodEntry;
+  }
+
+  async getFoodEntriesByDate(date: string): Promise<FoodEntry[]> {
+    await this.init();
+    const entries = await this.db!.getAllFromIndex('foodEntries', 'by-date', date);
+
+    // Migrate old entries without unit field
+    return entries.map(entry => {
+      if (!entry.unit) {
+        return { ...entry, unit: 'g' as const };
+      }
+      return entry;
+    });
+  }
+
+  async deleteFoodEntry(id: string): Promise<void> {
+    await this.init();
+    await this.db!.delete('foodEntries', id);
+  }
+
+  async getDailyLimits(): Promise<DailyLimits> {
+    await this.init();
+    const record = await this.db!.get('dailyLimits', 'default');
+    if (record) {
+      // Extract only the DailyLimits fields, excluding the id
+      const { id, ...limits } = record;
+      return limits;
+    }
+    return {
+      calories: 2000,
+      fat: 65,
+      protein: 150,
+      carbs: 250,
+    };
+  }
+
+  async setDailyLimits(limits: DailyLimits): Promise<void> {
+    await this.init();
+    const record: DailyLimitsRecord = { ...limits, id: 'default' };
+    await this.db!.put('dailyLimits', record);
+  }
+
+  async getCachedFood(name: string): Promise<FoodCache | undefined> {
+    await this.init();
+    const foods = await this.db!.getAllFromIndex('foodCache', 'by-name', name.toLowerCase());
+    return foods[0];
+  }
+
+  async cacheFood(food: Omit<FoodCache, 'id' | 'lastUsed'>): Promise<void> {
+    await this.init();
+    const cached: FoodCache = {
+      ...food,
+      id: crypto.randomUUID(),
+      name: food.name.toLowerCase(),
+      lastUsed: new Date(),
+    };
+    await this.db!.put('foodCache', cached);
+  }
+
+  async getAllFoodEntries(): Promise<FoodEntry[]> {
+    await this.init();
+    const entries = await this.db!.getAll('foodEntries');
+
+    // Migrate old entries without unit field
+    return entries.map(entry => {
+      if (!entry.unit) {
+        return { ...entry, unit: 'g' as const };
+      }
+      return entry;
+    });
+  }
+}
+
+export const db = new DatabaseService();

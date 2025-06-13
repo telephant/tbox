@@ -1,0 +1,55 @@
+{
+  "appName": "NutriLoop",
+  "appSubtitle": "Food Tracking Made Simple",
+  
+  "loading": "Loading NutriLoop...",
+  "showSettings": "Show Settings",
+  "hideSettings": "Hide Settings",
+  
+  "addFood": "Add Food",
+  "foodName": "Food Name",
+  "foodNamePlaceholder": "e.g., Apple, Chicken breast, Rice",
+  "weight": "Weight",
+  "weightPlaceholder": "e.g., 100",
+  "preview": "Preview",
+  "gettingInfo": "Getting Info...",
+  "adding": "Adding...",
+  "nutritionPreview": "Nutrition Preview",
+  
+  "calories": "Calories",
+  "fat": "Fat",
+  "protein": "Protein",
+  "carbs": "Carbs",
+  
+  "dailyProgress": "Daily Progress",
+  "dailyGoal": "% of daily goal",
+  "over": "over",
+  
+  "todaysFoodLog": "Today's Food Log",
+  "noFoodEntries": "No food entries yet today.",
+  "addFirstMeal": "Add your first meal above!",
+  "items": "items",
+  
+  "dailyLimits": "Daily Limits",
+  "saveLimits": "Save Limits",
+  "saving": "Saving...",
+  
+  "kcal": "kcal",
+  "grams": "g",
+  "milliliters": "ml",
+  
+  "enterBothFields": "Please enter both food name and weight",
+  "enterValidWeight": "Please enter a valid weight",
+  "failedToGetNutrition": "Failed to get nutrition info",
+  "failedToAddFood": "Failed to add food entry",
+  "failedToLoadLimits": "Failed to load daily limits",
+  "failedToSaveLimits": "Failed to save daily limits",
+  "failedToDeleteEntry": "Failed to delete food entry",
+  
+  "dateFormat": {
+    "weekday": "long",
+    "year": "numeric",
+    "month": "long",
+    "day": "numeric"
+  }
+}

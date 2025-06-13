@@ -1,0 +1,55 @@
+{
+  "appName": "营养环",
+  "appSubtitle": "简单的食物追踪",
+  
+  "loading": "正在加载营养环...",
+  "showSettings": "显示设置",
+  "hideSettings": "隐藏设置",
+  
+  "addFood": "添加食物",
+  "foodName": "食物名称",
+  "foodNamePlaceholder": "例如：苹果、鸡胸肉、米饭",
+  "weight": "重量",
+  "weightPlaceholder": "例如：100",
+  "preview": "预览",
+  "gettingInfo": "获取信息中...",
+  "adding": "添加中...",
+  "nutritionPreview": "营养预览",
+  
+  "calories": "卡路里",
+  "fat": "脂肪",
+  "protein": "蛋白质",
+  "carbs": "碳水化合物",
+  
+  "dailyProgress": "每日进度",
+  "dailyGoal": "% 每日目标",
+  "over": "超出",
+  
+  "todaysFoodLog": "今日食物记录",
+  "noFoodEntries": "今天还没有食物记录。",
+  "addFirstMeal": "在上方添加您的第一餐！",
+  "items": "项",
+  
+  "dailyLimits": "每日限额",
+  "saveLimits": "保存限额",
+  "saving": "保存中...",
+  
+  "kcal": "千卡",
+  "grams": "克",
+  "milliliters": "毫升",
+  
+  "enterBothFields": "请输入食物名称和重量",
+  "enterValidWeight": "请输入有效的重量",
+  "failedToGetNutrition": "获取营养信息失败",
+  "failedToAddFood": "添加食物记录失败",
+  "failedToLoadLimits": "加载每日限额失败",
+  "failedToSaveLimits": "保存每日限额失败",
+  "failedToDeleteEntry": "删除食物记录失败",
+  
+  "dateFormat": {
+    "weekday": "long",
+    "year": "numeric",
+    "month": "long",
+    "day": "numeric"
+  }
+}
