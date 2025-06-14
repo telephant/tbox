@@ -1,15 +1,7 @@
 import i18n from 'i18next';
 import { initReactI18next } from 'react-i18next';
 import LanguageDetector from 'i18next-browser-languagedetector';
-import { resources, supportedLanguages, type SupportedLanguage } from '@/locales';
-
-// Browser language detection function
-const detectBrowserLanguage = (): string => {
-  if (typeof window === 'undefined') return 'en';
-
-  const browserLang = navigator.language.split('-')[0];
-  return supportedLanguages.includes(browserLang as SupportedLanguage) ? browserLang : 'en';
-};
+import { resources, supportedLanguages } from '@/locales';
 
 i18n
   .use(LanguageDetector)
@@ -17,7 +9,6 @@ i18n
   .init({
     resources,
     fallbackLng: 'en',
-    lng: detectBrowserLanguage(),
     debug: false,
 
     detection: {

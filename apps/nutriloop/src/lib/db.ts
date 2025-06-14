@@ -92,7 +92,7 @@ class DatabaseService {
     const record = await this.db!.get('dailyLimits', 'default');
     if (record) {
       // Extract only the DailyLimits fields, excluding the id
-      const { id, ...limits } = record;
+      const { ...limits } = record;
       return limits;
     }
     return {
