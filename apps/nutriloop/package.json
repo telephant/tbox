@@ -5,8 +5,11 @@
   "scripts": {
     "dev": "next dev --turbopack",
     "build": "NODE_ENV=production next build",
+    "build:cloudflare": "NEXT_PUBLIC_DEPLOYMENT=cloudflare NODE_ENV=production next build",
+    "build:github": "NEXT_PUBLIC_DEPLOYMENT=gitpage NODE_ENV=production next build",
     "start": "next start",
-    "lint": "next lint"
+    "lint": " next lint",
+    "deploy:gp": "pnpm run build:github && gh-pages -d out"
   },
   "dependencies": {
     "react": "^19.0.0",
