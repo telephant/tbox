@@ -9,8 +9,18 @@ export function LanguageSwitcher() {
   const { i18n } = useTranslation();
   const [isOpen, setIsOpen] = useState(false);
 
+  // Defensive programming - ensure arrays exist
+  const safeLanguageNames = languageNames || {
+    en: { name: 'English', nativeName: 'English' },
+    zh: { name: 'Chinese', nativeName: '中文' },
+  };
+
+  const safeSupportedLanguages = supportedLanguages || ['en', 'zh'];
+
   const handleLanguageChange = (language: string) => {
-    i18n.changeLanguage(language);
+    if (i18n && typeof i18n.changeLanguage === 'function') {
+      i18n.changeLanguage(language);
+    }
     setIsOpen(false);
   };
 
@@ -34,17 +44,17 @@ export function LanguageSwitcher() {
 
           {/* Dropdown Menu */}
           <div className="absolute right-0 top-full mt-1 z-20 bg-white dark:bg-gray-900 border border-gray-200 dark:border-gray-700 rounded-md shadow-lg min-w-[120px]">
-            {supportedLanguages.map((lang) => (
+            {safeSupportedLanguages.map((lang) => (
               <button
                 key={lang}
                 onClick={() => handleLanguageChange(lang)}
                 className={`w-full px-3 py-2 text-left text-sm hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors first:rounded-t-md last:rounded-b-md ${
-                  i18n.language === lang
+                  i18n?.language === lang
                     ? 'bg-blue-50 dark:bg-blue-900/20 text-blue-600 dark:text-blue-400'
                     : 'text-gray-700 dark:text-gray-300'
                 }`}
               >
-                {languageNames[lang].nativeName}
+                {safeLanguageNames[lang as keyof typeof safeLanguageNames]?.nativeName || lang}
               </button>
             ))}
           </div>

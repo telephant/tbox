@@ -25,7 +25,10 @@ export function FoodLog({ entries, onEntryDeleted }: FoodLogProps) {
     }
   };
 
-  if (entries.length === 0) {
+  // Ensure entries is always an array
+  const safeEntries = Array.isArray(entries) ? entries : [];
+
+  if (safeEntries.length === 0) {
     return (
       <Card>
         <CardHeader>
@@ -50,12 +53,12 @@ export function FoodLog({ entries, onEntryDeleted }: FoodLogProps) {
       <CardHeader>
         <CardTitle className="flex items-center gap-2">
           <History className="h-5 w-5" />
-          {t('todaysFoodLog')} ({entries.length} {t('items')})
+          {t('todaysFoodLog')} ({safeEntries.length} {t('items')})
         </CardTitle>
       </CardHeader>
       <CardContent>
         <div className="space-y-3">
-          {entries.map((entry) => (
+          {safeEntries.map((entry) => (
             <div
               key={entry.id}
               className="flex items-center justify-between p-4 border border-gray-200 rounded-lg hover:bg-gray-50 dark:border-gray-700 dark:hover:bg-gray-800"

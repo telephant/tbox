@@ -18,6 +18,23 @@ export function Dashboard() {
   const [dailyProgress, setDailyProgress] = useState<DailyProgress | null>(null);
   const [isLoading, setIsLoading] = useState(true);
   const [showSettings, setShowSettings] = useState(false);
+  const [error, setError] = useState<string | null>(null);
+
+  // Fallback translation function
+  const safeT = (key: string) => {
+    try {
+      return t(key) || key;
+    } catch {
+      // Fallback translations
+      const fallbacks: Record<string, string> = {
+        loading: 'Loading NutriLoop...',
+        appName: 'NutriLoop',
+        showSettings: 'Show Settings',
+        hideSettings: 'Hide Settings',
+      };
+      return fallbacks[key] || key;
+    }
+  };
 
   useEffect(() => {
     loadData();
@@ -32,11 +49,19 @@ export function Dashboard() {
         db.getDailyLimits(),
       ]);
 
-      setFoodEntries(entries);
+      // Ensure entries is always an array
+      const safeEntries = Array.isArray(entries) ? entries : [];
+      setFoodEntries(safeEntries);
       setCurrentLimits(limits);
-      setDailyProgress(calculateDailyProgress(entries, limits));
+      setDailyProgress(calculateDailyProgress(safeEntries, limits));
+      setError(null);
     } catch (error) {
       console.error('Failed to load data:', error);
+      setError('Failed to load data. Please refresh the page.');
+      // Set safe defaults
+      setFoodEntries([]);
+      setCurrentLimits(null);
+      setDailyProgress(null);
     } finally {
       setIsLoading(false);
     }
@@ -60,7 +85,27 @@ export function Dashboard() {
       <div className="min-h-screen bg-gray-50 dark:bg-gray-900 flex items-center justify-center">
         <div className="text-center">
           <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600 mx-auto mb-4"></div>
-          <p className="text-gray-600 dark:text-gray-400">{t('loading')}</p>
+          <p className="text-gray-600 dark:text-gray-400">{safeT('loading')}</p>
+        </div>
+      </div>
+    );
+  }
+
+  if (error) {
+    return (
+      <div className="min-h-screen bg-gray-50 dark:bg-gray-900 flex items-center justify-center">
+        <div className="text-center">
+          <div className="text-red-500 text-xl mb-4">⚠️</div>
+          <p className="text-red-600 dark:text-red-400 mb-4">{error}</p>
+          <button
+            onClick={() => {
+              setError(null);
+              loadData();
+            }}
+            className="px-4 py-2 bg-blue-500 text-white rounded hover:bg-blue-600"
+          >
+            Retry
+          </button>
         </div>
       </div>
     );
