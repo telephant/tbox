@@ -3,7 +3,7 @@
   "version": "0.1.0",
   "private": true,
   "scripts": {
-    "dev": "next dev --turbopack",
+    "dev": "next dev",
     "build": "NODE_ENV=production next build",
     "build:cloudflare": "NEXT_PUBLIC_DEPLOYMENT=cloudflare NODE_ENV=production next build",
     "build:github": "NEXT_PUBLIC_DEPLOYMENT=gitpage NODE_ENV=production next build",

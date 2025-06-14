@@ -2,14 +2,14 @@
 
 import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
+import { Card, CardContent, CardHeader, CardTitle } from './ui/card';
 import { Button } from './ui/button';
 import { Input } from './ui/input';
 import { Select } from './ui/select';
-import { Card, CardContent, CardHeader, CardTitle } from './ui/card';
 import { nutritionService } from '@/lib/openai';
 import { db } from '@/lib/db';
 import { getTodayDateString, formatNutritionValue } from '@/lib/utils';
-import { Plus, Loader2, Eye, Check } from 'lucide-react';
+import { Plus, Loader2, Eye, Check, UtensilsCrossed } from 'lucide-react';
 import { NutritionInfo } from '@/lib/types';
 
 interface FoodInputProps {
@@ -70,8 +70,6 @@ export function FoodInput({ onFoodAdded }: FoodInputProps) {
 
     try {
       let nutrition: NutritionInfo;
-
-      // Use preview nutrition if available, otherwise fetch from API
       if (previewNutrition) {
         nutrition = previewNutrition;
       } else {
@@ -86,7 +84,6 @@ export function FoodInput({ onFoodAdded }: FoodInputProps) {
         date: getTodayDateString(),
       });
 
-      // Reset form
       setFoodName('');
       setWeight('');
       setUnit('g');
@@ -99,120 +96,118 @@ export function FoodInput({ onFoodAdded }: FoodInputProps) {
     }
   };
 
-  // Clear preview when inputs change
-  const handleInputChange = (field: 'name' | 'weight' | 'unit', value: string) => {
-    if (field === 'name') {
-      setFoodName(value);
-    } else if (field === 'weight') {
-      setWeight(value);
-    } else if (field === 'unit') {
-      setUnit(value as 'g' | 'ml');
-    }
-    // Clear preview when inputs change
-    if (previewNutrition) {
-      setPreviewNutrition(null);
-    }
-  };
-
   return (
-    <Card>
-      <CardHeader>
-        <CardTitle className="flex items-center gap-2">
-          <Plus className="h-5 w-5" />
+    <Card className="overflow-hidden border-none bg-gradient-to-br from-white to-gray-50/50 dark:from-gray-800/50 dark:to-gray-900/30 backdrop-blur-xl">
+      <CardHeader className="border-b border-gray-100 dark:border-gray-800 pb-4">
+        <CardTitle className="flex items-center gap-2 text-lg">
+          <div className="p-1.5 rounded-full bg-gradient-to-r from-blue-400 via-blue-500 to-indigo-600 hover:from-blue-500 hover:via-blue-600 hover:to-indigo-700 text-white shadow-lg shadow-blue-500/20">
+            <UtensilsCrossed className="h-4 w-4" />
+          </div>
           {t('addFood')}
         </CardTitle>
       </CardHeader>
-      <CardContent>
-        <form onSubmit={handleSubmit} className="space-y-4">
-          <div>
-            <label htmlFor="food-name" className="block text-sm font-medium mb-1">
-              {t('foodName')}
-            </label>
-            <Input
-              id="food-name"
-              type="text"
-              placeholder={t('foodNamePlaceholder')}
-              value={foodName}
-              onChange={(e) => handleInputChange('name', e.target.value)}
-              disabled={isLoading || isPreviewLoading}
-            />
-          </div>
-
-          <div>
-            <label htmlFor="weight" className="block text-sm font-medium mb-1">
-              {t('weight')}
-            </label>
-            <div className="flex gap-2">
+      <CardContent className="p-6">
+        <form onSubmit={handleSubmit} className="space-y-6">
+          <div className="grid gap-6 md:grid-cols-2">
+            {/* Food Name Input */}
+            <div className="space-y-2">
+              <div className="text-sm font-medium text-gray-700 dark:text-gray-300">
+                {t('foodName')}
+              </div>
               <Input
-                id="weight"
-                type="number"
-                placeholder={t('weightPlaceholder')}
-                value={weight}
-                onChange={(e) => handleInputChange('weight', e.target.value)}
+                type="text"
+                placeholder={t('foodNamePlaceholder')}
+                value={foodName}
+                onChange={(e) => setFoodName(e.target.value)}
                 disabled={isLoading || isPreviewLoading}
-                min="0"
-                step="0.1"
-                className="flex-1"
+                className="bg-white/50 dark:bg-gray-800/50 backdrop-blur-sm border-gray-200 dark:border-gray-700 focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500 transition-all duration-200"
               />
-              <Select
-                value={unit}
-                onChange={(e) => handleInputChange('unit', e.target.value)}
-                disabled={isLoading || isPreviewLoading}
-                className="w-20"
-              >
-                <option value="g">{t('grams')}</option>
-                <option value="ml">{t('milliliters')}</option>
-              </Select>
+            </div>
+
+            {/* Weight Input with Unit */}
+            <div className="space-y-2">
+              <div className="text-sm font-medium text-gray-700 dark:text-gray-300">
+                {t('weight')}
+              </div>
+              <div className="flex gap-2">
+                <Input
+                  type="number"
+                  placeholder={t('weightPlaceholder')}
+                  value={weight}
+                  onChange={(e) => setWeight(e.target.value)}
+                  disabled={isLoading || isPreviewLoading}
+                  min="0"
+                  step="0.1"
+                  className="flex-1 bg-white/50 dark:bg-gray-800/50 backdrop-blur-sm border-gray-200 dark:border-gray-700 focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500 transition-all duration-200"
+                />
+                <Select
+                  value={unit}
+                  onChange={(e) => setUnit(e.target.value as 'g' | 'ml')}
+                  disabled={isLoading || isPreviewLoading}
+                  className="w-24 bg-white/50 dark:bg-gray-800/50 backdrop-blur-sm border-gray-200 dark:border-gray-700 focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500 transition-all duration-200"
+                >
+                  <option value="g">{t('grams')}</option>
+                  <option value="ml">{t('milliliters')}</option>
+                </Select>
+              </div>
             </div>
           </div>
 
-          {/* Preview Nutrition Display */}
+          {/* Preview Card */}
           {previewNutrition && (
-            <div className="p-4 bg-green-50 border border-green-200 rounded-lg dark:bg-green-900/20 dark:border-green-800">
-              <h4 className="font-medium text-green-800 dark:text-green-200 mb-2 flex items-center gap-2">
+            <div className="rounded-lg bg-gradient-to-br from-blue-50 to-blue-100/50 dark:from-blue-900/10 dark:to-blue-800/5 p-4 border border-blue-200/50 dark:border-blue-800/50">
+              <div className="flex items-center gap-2 text-sm font-medium text-blue-700 dark:text-blue-300 mb-3">
                 <Check className="h-4 w-4" />
                 {t('nutritionPreview')}
-              </h4>
-              <div className="grid grid-cols-2 sm:grid-cols-4 gap-2 text-sm">
-                <div className="text-center">
-                  <div className="font-medium text-green-700 dark:text-green-300">
-                    {formatNutritionValue(previewNutrition.calories, 'kcal')}
+              </div>
+              <div className="grid grid-cols-2 sm:grid-cols-4 gap-4">
+                <div className="flex items-center gap-2">
+                  <span role="img" aria-label="calories" className="text-xl">🔥</span>
+                  <div className="text-sm">
+                    <div className="font-medium">{formatNutritionValue(previewNutrition.calories, 'kcal')}</div>
+                    <div className="text-gray-500 dark:text-gray-400">{t('calories')}</div>
                   </div>
-                  <div className="text-green-600 dark:text-green-400">{t('calories')}</div>
                 </div>
-                <div className="text-center">
-                  <div className="font-medium text-green-700 dark:text-green-300">
-                    {formatNutritionValue(previewNutrition.fat, 'g')}
+                <div className="flex items-center gap-2">
+                  <span role="img" aria-label="protein" className="text-xl">🥩</span>
+                  <div className="text-sm">
+                    <div className="font-medium">{formatNutritionValue(previewNutrition.protein, 'g')}</div>
+                    <div className="text-gray-500 dark:text-gray-400">{t('protein')}</div>
                   </div>
-                  <div className="text-green-600 dark:text-green-400">{t('fat')}</div>
                 </div>
-                <div className="text-center">
-                  <div className="font-medium text-green-700 dark:text-green-300">
-                    {formatNutritionValue(previewNutrition.protein, 'g')}
+                <div className="flex items-center gap-2">
+                  <span role="img" aria-label="fat" className="text-xl">🥑</span>
+                  <div className="text-sm">
+                    <div className="font-medium">{formatNutritionValue(previewNutrition.fat, 'g')}</div>
+                    <div className="text-gray-500 dark:text-gray-400">{t('fat')}</div>
                   </div>
-                  <div className="text-green-600 dark:text-green-400">{t('protein')}</div>
                 </div>
-                <div className="text-center">
-                  <div className="font-medium text-green-700 dark:text-green-300">
-                    {formatNutritionValue(previewNutrition.carbs, 'g')}
+                <div className="flex items-center gap-2">
+                  <span role="img" aria-label="carbs" className="text-xl">🍚</span>
+                  <div className="text-sm">
+                    <div className="font-medium">{formatNutritionValue(previewNutrition.carbs, 'g')}</div>
+                    <div className="text-gray-500 dark:text-gray-400">{t('carbs')}</div>
                   </div>
-                  <div className="text-green-600 dark:text-green-400">{t('carbs')}</div>
                 </div>
               </div>
             </div>
           )}
 
+          {/* Error Message */}
           {error && (
-            <div className="text-red-600 text-sm">{error}</div>
+            <div className="p-3 text-sm text-red-600 bg-red-100/50 dark:bg-red-900/20 dark:text-red-400 rounded-lg animate-shake">
+              {error}
+            </div>
           )}
 
+          {/* Action Buttons */}
           <div className="flex gap-2">
             <Button
               type="button"
               variant="outline"
               onClick={handlePreview}
               disabled={isLoading || isPreviewLoading || !foodName.trim() || !weight.trim()}
-              className="flex-1"
+              className="flex-1 border-blue-200 dark:border-blue-800 hover:bg-blue-50 dark:hover:bg-blue-900/20 transition-all duration-200"
             >
               {isPreviewLoading ? (
                 <>
@@ -230,7 +225,7 @@ export function FoodInput({ onFoodAdded }: FoodInputProps) {
             <Button
               type="submit"
               disabled={isLoading || isPreviewLoading}
-              className="flex-1"
+              className="flex-1 bg-gradient-to-r from-blue-400 via-blue-500 to-indigo-600 hover:from-blue-500 hover:via-blue-600 hover:to-indigo-700 text-white transition-all duration-200"
             >
               {isLoading ? (
                 <>
