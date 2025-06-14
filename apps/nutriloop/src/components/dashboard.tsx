@@ -12,6 +12,7 @@ import { LanguageSwitcher } from './language-switcher';
 import { ProgressBars } from './progress-bars';
 
 export function Dashboard() {
+  // Always call hooks in the same order
   const { t } = useTranslation();
   const [foodEntries, setFoodEntries] = useState<FoodEntry[]>([]);
   const [currentLimits, setCurrentLimits] = useState<DailyLimits | null>(null);
@@ -19,22 +20,6 @@ export function Dashboard() {
   const [isLoading, setIsLoading] = useState(true);
   const [showSettings, setShowSettings] = useState(false);
   const [error, setError] = useState<string | null>(null);
-
-  // Fallback translation function
-  const safeT = (key: string) => {
-    try {
-      return t(key) || key;
-    } catch {
-      // Fallback translations
-      const fallbacks: Record<string, string> = {
-        loading: 'Loading NutriLoop...',
-        appName: 'NutriLoop',
-        showSettings: 'Show Settings',
-        hideSettings: 'Hide Settings',
-      };
-      return fallbacks[key] || key;
-    }
-  };
 
   useEffect(() => {
     loadData();
@@ -85,7 +70,7 @@ export function Dashboard() {
       <div className="min-h-screen bg-gray-50 dark:bg-gray-900 flex items-center justify-center">
         <div className="text-center">
           <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600 mx-auto mb-4"></div>
-          <p className="text-gray-600 dark:text-gray-400">{safeT('loading')}</p>
+          <p className="text-gray-600 dark:text-gray-400">{t('loading')}</p>
         </div>
       </div>
     );

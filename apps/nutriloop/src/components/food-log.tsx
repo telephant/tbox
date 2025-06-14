@@ -14,7 +14,12 @@ interface FoodLogProps {
 }
 
 export function FoodLog({ entries, onEntryDeleted }: FoodLogProps) {
-  const { t } = useTranslation();
+  const { t, ready } = useTranslation();
+
+  // Don't render until translations are ready
+  if (!ready) {
+    return null;
+  }
 
   const handleDelete = async (id: string) => {
     try {
