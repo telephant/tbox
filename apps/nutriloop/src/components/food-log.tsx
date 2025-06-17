@@ -71,15 +71,15 @@ export function FoodLog({ entries, onEntryDeleted }: FoodLogProps) {
     return (
       <Card>
         <CardHeader>
-          <CardTitle className="flex items-center gap-2">
+          <CardTitle>
             <History className="h-5 w-5" />
             {t('todaysFoodLog')} (0 {t('items')})
           </CardTitle>
         </CardHeader>
         <CardContent>
-          <div className="text-center text-gray-500 dark:text-gray-400">
-            <p>{t('noFoodEntries')}</p>
-            <p className="text-sm">{t('addFirstMeal')}</p>
+          <div className="text-center text-gray-500 dark:text-gray-400 py-8">
+            <p className="mb-2">{t('noFoodEntries')}</p>
+            <p className="text-sm text-gray-400 dark:text-gray-500">{t('addFirstMeal')}</p>
           </div>
         </CardContent>
       </Card>
@@ -89,7 +89,7 @@ export function FoodLog({ entries, onEntryDeleted }: FoodLogProps) {
   return (
     <Card>
       <CardHeader>
-        <CardTitle className="flex items-center gap-2">
+        <CardTitle>
           <History className="h-5 w-5" />
           {t('todaysFoodLog')} ({safeEntries.length} {t('items')})
         </CardTitle>
@@ -99,18 +99,23 @@ export function FoodLog({ entries, onEntryDeleted }: FoodLogProps) {
           {safeEntries.map((entry) => (
             <div
               key={entry.id}
-              className="border border-gray-200 rounded-lg dark:border-gray-700"
+              className="bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-lg 
+                shadow-sm hover:shadow-md transition-all duration-200
+                hover:border-indigo-200 dark:hover:border-indigo-800"
             >
               <div className="flex items-center justify-between p-4">
                 <div className="flex-1">
-                  <div className="flex items-center gap-2 mb-1">
-                    <h4 className="font-medium capitalize">{entry.name}</h4>
-                    <span className="text-sm text-gray-500">({entry.weight}{entry.unit})</span>
+                  <div className="flex items-center gap-2 mb-2">
+                    <h4 className="font-medium capitalize text-gray-800 dark:text-gray-200">{entry.name}</h4>
+                    <span className="text-sm text-gray-500 dark:text-gray-400">({entry.weight}{entry.unit})</span>
                   </div>
-                  <div className="grid grid-cols-2 sm:grid-cols-4 gap-2 text-sm text-gray-600">
+                  <div className="grid grid-cols-2 sm:grid-cols-4 gap-2 text-sm">
                     {categories.macros.map((nutrient) => (
-                      <span key={nutrient.key}>
-                        {formatNutritionValue(entry.nutrition[nutrient.key], nutrient.unit)} {t(nutrient.key)}
+                      <span key={nutrient.key} className="text-gray-600 dark:text-gray-400">
+                        <span className="font-medium text-gray-700 dark:text-gray-300">
+                          {formatNutritionValue(entry.nutrition[nutrient.key], nutrient.unit)}
+                        </span>{' '}
+                        {t(nutrient.key)}
                       </span>
                     ))}
                   </div>
@@ -120,26 +125,29 @@ export function FoodLog({ entries, onEntryDeleted }: FoodLogProps) {
                   variant="ghost"
                   size="icon"
                   onClick={() => handleDelete(entry.id)}
-                  className="text-red-500 hover:text-red-700 hover:bg-red-50"
+                  className="text-gray-400 hover:text-red-500"
                 >
                   <Trash2 className="h-4 w-4" />
                 </Button>
               </div>
 
               <Accordion type="single" collapsible className="border-t border-gray-200 dark:border-gray-700">
-                <AccordionItem value="details">
-                  <AccordionTrigger className="px-4 py-2 text-sm">
+                <AccordionItem value="details" className="border-b-0">
+                  <AccordionTrigger>
                     {t('moreDetails')}
                   </AccordionTrigger>
-                  <AccordionContent className="px-4 pb-4">
+                  <AccordionContent>
                     <div className="space-y-4">
                       {Object.entries(categories).slice(1).map(([category, nutrients]) => (
                         <div key={category}>
-                          <h5 className="font-medium mb-2 text-sm">{t(category)}</h5>
-                          <div className="grid grid-cols-2 sm:grid-cols-3 gap-2 text-sm text-gray-600">
+                          <h5 className="font-medium mb-2 text-sm text-gray-700 dark:text-gray-300">{t(category)}</h5>
+                          <div className="grid grid-cols-2 sm:grid-cols-3 gap-2 text-sm">
                             {nutrients.map((nutrient) => (
-                              <div key={nutrient.key}>
-                                {formatNutritionValue(entry.nutrition[nutrient.key], nutrient.unit)} {t(nutrient.key)}
+                              <div key={nutrient.key} className="text-gray-600 dark:text-gray-400">
+                                <span className="font-medium text-gray-700 dark:text-gray-300">
+                                  {formatNutritionValue(entry.nutrition[nutrient.key], nutrient.unit)}
+                                </span>{' '}
+                                {t(nutrient.key)}
                               </div>
                             ))}
                           </div>

@@ -1,14 +1,15 @@
 'use client';
 
-import { useState, useEffect } from 'react';
-import { useTranslation } from 'react-i18next';
-import { Card, CardContent, CardHeader, CardTitle } from './ui/card';
-import { Button } from './ui/button';
-import { Input } from './ui/input';
-import { DailyLimits, NutritionInfo } from '@/lib/types';
 import { db } from '@/lib/db';
-import { Settings, Save } from 'lucide-react';
+import { DailyLimits, NutritionInfo } from '@/lib/types';
+import { Save, Settings } from 'lucide-react';
+import { useEffect, useState } from 'react';
+import { useTranslation } from 'react-i18next';
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from './ui/accordion';
+import { Button } from './ui/button';
+import { Card, CardContent, CardHeader, CardTitle } from './ui/card';
+import { Input } from './ui/input';
+import { textStyles } from '@/lib/styles';
 
 interface DailyLimitsProps {
   initialLimits: DailyLimits;
@@ -99,23 +100,23 @@ export function DailyLimitsSettings({ initialLimits, onLimitsUpdated }: DailyLim
   return (
     <Card>
       <CardHeader>
-        <CardTitle className="flex items-center gap-2">
+        <CardTitle>
           <Settings className="h-5 w-5" />
           {t('dailyLimits')}
         </CardTitle>
       </CardHeader>
       <CardContent>
-        <Accordion type="multiple" defaultValue={['macros']} className="space-y-4">
+        <Accordion type="multiple" defaultValue={['macros']} className="space-y-2">
           {Object.entries(categories).map(([category, nutrients]) => (
             <AccordionItem key={category} value={category}>
-              <AccordionTrigger className="text-lg font-semibold">
+              <AccordionTrigger>
                 {t(category)}
               </AccordionTrigger>
               <AccordionContent>
-                <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 pt-4">
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
                   {nutrients.map((nutrient) => (
                     <div key={nutrient.key}>
-                      <label htmlFor={nutrient.key} className="block text-sm font-medium mb-1">
+                      <label htmlFor={nutrient.key} className={textStyles.label}>
                         {t(nutrient.key)} ({nutrient.unit})
                       </label>
                       <Input
@@ -125,7 +126,6 @@ export function DailyLimitsSettings({ initialLimits, onLimitsUpdated }: DailyLim
                         value={limits[nutrient.key]?.toString() || '0'}
                         onChange={(e) => handleInputChange(nutrient.key, e.target.value)}
                         onKeyDown={(e) => {
-                          // Allow: backspace, delete, tab, escape, enter, decimal point
                           if (
                             e.key === 'Backspace' ||
                             e.key === 'Delete' ||
@@ -140,7 +140,6 @@ export function DailyLimitsSettings({ initialLimits, onLimitsUpdated }: DailyLim
                           ) {
                             return;
                           }
-                          // Block non-numeric keys
                           if (!/[0-9]/.test(e.key)) {
                             e.preventDefault();
                           }
@@ -154,10 +153,10 @@ export function DailyLimitsSettings({ initialLimits, onLimitsUpdated }: DailyLim
           ))}
         </Accordion>
 
-        <Button onClick={handleSave} disabled={isSaving} className="w-full mt-6">
+        <Button onClick={handleSave} disabled={isSaving} className="w-full mt-5">
           {isSaving ? (
             <>
-              <Save className="mr-2 h-4 w-4" />
+              <Save className="mr-2 h-4 w-4 animate-pulse" />
               {t('saving')}
             </>
           ) : (

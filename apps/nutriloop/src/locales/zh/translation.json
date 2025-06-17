@@ -1,8 +1,8 @@
 {
-  "appName": "营养环",
+  "appName": "营养循环",
   "appSubtitle": "简单的食物追踪",
   
-  "loading": "正在加载营养环...",
+  "loading": "正在加载营养循环...",
   "showSettings": "显示设置",
   "hideSettings": "隐藏设置",
   
@@ -15,36 +15,69 @@
   "gettingInfo": "获取信息中...",
   "adding": "添加中...",
   "nutritionPreview": "营养预览",
+  "moreDetails": "更多详情",
   
   "calories": "卡路里",
   "fat": "脂肪",
   "protein": "蛋白质",
   "carbs": "碳水化合物",
   
+  "macros": "宏量营养素",
+  "minerals": "矿物质",
+  "vitamins": "维生素",
+  "others": "其他",
+  
+  "sodium": "钠",
+  "potassium": "钾",
+  "calcium": "钙",
+  "magnesium": "镁",
+  "iron": "铁",
+  "zinc": "锌",
+  
+  "vitaminA": "维生素A",
+  "vitaminC": "维生素C",
+  "vitaminD": "维生素D",
+  "vitaminE": "维生素E",
+  "vitaminK": "维生素K",
+  "vitaminB1": "维生素B1",
+  "vitaminB6": "维生素B6",
+  "vitaminB12": "维生素B12",
+  
+  "cholesterol": "胆固醇",
+  "sugar": "糖",
+  "saturatedFat": "饱和脂肪",
+  "transFat": "反式脂肪",
+  "omega3": "欧米伽-3",
+  "omega6": "欧米伽-6",
+  
   "dailyProgress": "每日进度",
-  "dailyGoal": "% 每日目标",
+  "dailyGoal": "日目标完成度",
   "over": "超出",
   
   "todaysFoodLog": "今日食物记录",
   "noFoodEntries": "今天还没有食物记录。",
-  "addFirstMeal": "在上方添加您的第一餐！",
+  "addFirstMeal": "在上方添加你的第一餐！",
   "items": "项",
   
-  "dailyLimits": "每日限额",
-  "saveLimits": "保存限额",
+  "dailyLimits": "每日限制",
+  "saveLimits": "保存限制",
   "saving": "保存中...",
   
   "kcal": "千卡",
   "grams": "克",
   "milliliters": "毫升",
+  "mg": "毫克",
+  "μg": "微克",
+  "pieces": "个",
   
   "enterBothFields": "请输入食物名称和重量",
   "enterValidWeight": "请输入有效的重量",
   "failedToGetNutrition": "获取营养信息失败",
   "failedToAddFood": "添加食物记录失败",
-  "failedToLoadLimits": "加载每日限额失败",
-  "failedToSaveLimits": "保存每日限额失败",
+  "failedToLoadLimits": "加载每日限制失败",
+  "failedToSaveLimits": "保存每日限制失败",
   "failedToDeleteEntry": "删除食物记录失败",
+  "lastUsedWeight": "上次使用的重量",
   
   "dateFormat": {
     "weekday": "long",

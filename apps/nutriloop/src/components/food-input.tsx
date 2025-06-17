@@ -12,6 +12,7 @@ import { getTodayDateString, formatNutritionValue } from '@/lib/utils';
 import { Plus, Loader2, Eye } from 'lucide-react';
 import { NutritionInfo, Unit } from '@/lib/types';
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from './ui/accordion';
+import { textStyles } from '@/lib/styles';
 
 interface FoodInputProps {
   onFoodAdded: () => void;
@@ -158,7 +159,7 @@ export function FoodInput({ onFoodAdded }: FoodInputProps) {
   return (
     <Card>
       <CardHeader>
-        <CardTitle className="flex items-center gap-2">
+        <CardTitle>
           <Plus className="h-5 w-5" />
           {t('addFood')}
         </CardTitle>
@@ -166,7 +167,7 @@ export function FoodInput({ onFoodAdded }: FoodInputProps) {
       <CardContent>
         <form onSubmit={handleSubmit} className="space-y-4">
           <div>
-            <label htmlFor="foodName" className="block text-sm font-medium mb-1">
+            <label htmlFor="foodName" className={textStyles.label}>
               {t('foodName')}
             </label>
             <Input
@@ -179,7 +180,7 @@ export function FoodInput({ onFoodAdded }: FoodInputProps) {
           </div>
 
           <div>
-            <label htmlFor="weight" className="block text-sm font-medium mb-1">
+            <label htmlFor="weight" className={textStyles.label}>
               {t('weight')}
             </label>
             <div className="flex gap-2">
@@ -190,6 +191,7 @@ export function FoodInput({ onFoodAdded }: FoodInputProps) {
                 placeholder={t('weightPlaceholder')}
                 value={weight}
                 onChange={(e) => handleInputChange('weight', e.target.value)}
+                disabled={isLoading || isPreviewLoading}
                 onKeyDown={(e) => {
                   if (
                     e.key === 'Backspace' ||
@@ -209,14 +211,12 @@ export function FoodInput({ onFoodAdded }: FoodInputProps) {
                     e.preventDefault();
                   }
                 }}
-                disabled={isLoading || isPreviewLoading}
-                className="flex-1"
               />
               <Select
                 value={unit}
                 onChange={(e) => handleInputChange('unit', e.target.value)}
                 disabled={isLoading || isPreviewLoading}
-                className="w-20"
+                className="w-24"
               >
                 <option value="g">{t('grams')}</option>
                 <option value="ml">{t('milliliters')}</option>
@@ -225,20 +225,20 @@ export function FoodInput({ onFoodAdded }: FoodInputProps) {
             </div>
           </div>
 
-          {error && <p className="text-sm text-destructive">{error}</p>}
+          {error && <div className={textStyles.error}>{error}</div>}
 
-          <div className="flex gap-2">
+          <div className="flex gap-2 pt-2">
             <Button
               type="button"
-              variant="outline"
               onClick={handlePreview}
               disabled={isLoading || isPreviewLoading}
+              variant="secondary"
               className="flex-1"
             >
               {isPreviewLoading ? (
                 <>
                   <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-                  {t('gettingInfo')}
+                  {t('loading')}
                 </>
               ) : (
                 <>
@@ -247,8 +247,11 @@ export function FoodInput({ onFoodAdded }: FoodInputProps) {
                 </>
               )}
             </Button>
-
-            <Button type="submit" disabled={isLoading || isPreviewLoading} className="flex-1">
+            <Button
+              type="submit"
+              disabled={isLoading || isPreviewLoading}
+              className="flex-1"
+            >
               {isLoading ? (
                 <>
                   <Loader2 className="mr-2 h-4 w-4 animate-spin" />
@@ -257,39 +260,40 @@ export function FoodInput({ onFoodAdded }: FoodInputProps) {
               ) : (
                 <>
                   <Plus className="mr-2 h-4 w-4" />
-                  {t('addFood')}
+                  {t('add')}
                 </>
               )}
             </Button>
           </div>
-
-          {previewNutrition && (
-            <Card>
-              <CardHeader>
-                <CardTitle>{t('nutritionPreview')}</CardTitle>
-              </CardHeader>
-              <CardContent>
-                <Accordion type="single" collapsible className="w-full">
-                  {Object.entries(categories).map(([category, nutrients]) => (
-                    <AccordionItem key={category} value={category}>
-                      <AccordionTrigger>{t(category)}</AccordionTrigger>
-                      <AccordionContent>
-                        <div className="grid grid-cols-2 gap-2">
-                          {nutrients.map(({ key, unit }) => (
-                            <div key={key} className="flex justify-between">
-                              <span>{t(key)}</span>
-                              <span>{formatNutritionValue(previewNutrition[key as keyof NutritionInfo], unit)}</span>
-                            </div>
-                          ))}
-                        </div>
-                      </AccordionContent>
-                    </AccordionItem>
-                  ))}
-                </Accordion>
-              </CardContent>
-            </Card>
-          )}
         </form>
+
+        {previewNutrition && (
+          <div className="mt-6 pt-6 border-t border-gray-200 dark:border-gray-700">
+            <Accordion type="multiple" defaultValue={['macros']} className="space-y-2">
+              {Object.entries(categories).map(([category, nutrients]) => (
+                <AccordionItem key={category} value={category}>
+                  <AccordionTrigger>
+                    {t(category)}
+                  </AccordionTrigger>
+                  <AccordionContent>
+                    <div className="grid grid-cols-2 sm:grid-cols-3 gap-3">
+                      {nutrients.map((nutrient) => (
+                        <div key={nutrient.key} className="text-sm">
+                          <span className="block text-gray-600 dark:text-gray-400">
+                            {t(nutrient.key)}
+                          </span>
+                          <span className="font-medium text-gray-800 dark:text-gray-200">
+                            {formatNutritionValue(previewNutrition[nutrient.key], nutrient.unit)}
+                          </span>
+                        </div>
+                      ))}
+                    </div>
+                  </AccordionContent>
+                </AccordionItem>
+              ))}
+            </Accordion>
+          </div>
+        )}
       </CardContent>
     </Card>
   );

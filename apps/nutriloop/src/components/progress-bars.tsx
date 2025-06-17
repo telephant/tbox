@@ -91,8 +91,11 @@ export function ProgressBars({ progress }: ProgressBarsProps) {
   return (
     <Card>
       <CardHeader>
-        <CardTitle className="flex items-center gap-2">
-          <Target className="h-5 w-5" />
+        <CardTitle className="flex items-center gap-2 relative">
+          <div className="relative">
+            <Target className="h-5 w-5 stroke-[2] text-indigo-500" />
+            <div className="absolute inset-0 bg-gradient-to-r from-indigo-500 via-purple-500 to-pink-500 mix-blend-overlay" />
+          </div>
           {t('dailyProgress')}
         </CardTitle>
       </CardHeader>
@@ -100,7 +103,7 @@ export function ProgressBars({ progress }: ProgressBarsProps) {
         <Accordion type="multiple" defaultValue={['macros']} className="space-y-2">
           {Object.entries(categories).map(([key, nutrients]) => (
             <AccordionItem key={key} value={key}>
-              <AccordionTrigger className="text-lg font-semibold">
+              <AccordionTrigger className="text-sm">
                 {t(key)}
               </AccordionTrigger>
               <AccordionContent>
@@ -117,3 +120,4 @@ export function ProgressBars({ progress }: ProgressBarsProps) {
     </Card>
   );
 }
+

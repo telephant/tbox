@@ -97,17 +97,17 @@ export function Dashboard() {
   }
 
   return (
-    <div className="min-h-screen bg-gray-50 dark:bg-gray-900">
-      <div className="container mx-auto px-4 py-8 max-w-4xl">
+    <div className="min-h-screen bg-gradient-to-br from-gray-50 to-white dark:from-gray-900 dark:to-gray-800">
+      <div className="container mx-auto px-4 py-6 max-w-4xl">
         {/* Header */}
-        <div className="mb-8">
+        <div className="mb-6">
           <div className="flex justify-between items-center mb-4">
             <div className="flex-1"></div>
             <div className="text-center">
-              <h1 className="text-3xl font-bold text-gray-900 dark:text-white mb-2">
+              <h1 className="text-3xl font-medium bg-gradient-to-r from-indigo-500 to-purple-500 bg-clip-text text-transparent mb-2">
                 {t('appName')}
               </h1>
-              <p className="text-gray-600 dark:text-gray-400">
+              <p className="text-gray-600 dark:text-gray-400 text-sm">
                 {formatDate(getTodayDateString())}
               </p>
             </div>
@@ -118,16 +118,21 @@ export function Dashboard() {
         </div>
 
         {/* Settings Toggle */}
-        <div className="mb-6 text-center">
+        <div className="mb-5 text-center">
           <button
             onClick={() => setShowSettings(!showSettings)}
-            className="text-blue-600 hover:text-blue-800 dark:text-blue-400 dark:hover:text-blue-300 text-sm font-medium"
+            className="px-4 py-1.5 text-sm font-medium rounded-full
+              bg-gradient-to-r from-gray-50 to-white dark:from-gray-800 dark:to-gray-700
+              border border-gray-200 dark:border-gray-700
+              hover:border-indigo-200 dark:hover:border-indigo-800
+              hover:shadow-sm transition-all duration-200
+              text-gray-700 dark:text-gray-300"
           >
             {showSettings ? t('hideSettings') : t('showSettings')}
           </button>
         </div>
 
-        <div className="space-y-6">
+        <div className="space-y-5">
           {/* Settings Panel */}
           {showSettings && currentLimits && (
             <DailyLimitsSettings
