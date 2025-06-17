@@ -15,11 +15,40 @@
   "gettingInfo": "Getting Info...",
   "adding": "Adding...",
   "nutritionPreview": "Nutrition Preview",
+  "moreDetails": "More Details",
   
   "calories": "Calories",
   "fat": "Fat",
   "protein": "Protein",
   "carbs": "Carbs",
+  
+  "macros": "Macros",
+  "minerals": "Minerals",
+  "vitamins": "Vitamins",
+  "others": "Others",
+  
+  "sodium": "Sodium",
+  "potassium": "Potassium",
+  "calcium": "Calcium",
+  "magnesium": "Magnesium",
+  "iron": "Iron",
+  "zinc": "Zinc",
+  
+  "vitaminA": "Vitamin A",
+  "vitaminC": "Vitamin C",
+  "vitaminD": "Vitamin D",
+  "vitaminE": "Vitamin E",
+  "vitaminK": "Vitamin K",
+  "vitaminB1": "Vitamin B1",
+  "vitaminB6": "Vitamin B6",
+  "vitaminB12": "Vitamin B12",
+  
+  "cholesterol": "Cholesterol",
+  "sugar": "Sugar",
+  "saturatedFat": "Saturated Fat",
+  "transFat": "Trans Fat",
+  "omega3": "Omega-3",
+  "omega6": "Omega-6",
   
   "dailyProgress": "Daily Progress",
   "dailyGoal": "% of daily goal",
@@ -37,6 +66,9 @@
   "kcal": "kcal",
   "grams": "g",
   "milliliters": "ml",
+  "mg": "mg",
+  "μg": "μg",
+  "pieces": "pieces",
   
   "enterBothFields": "Please enter both food name and weight",
   "enterValidWeight": "Please enter a valid weight",
@@ -45,6 +77,7 @@
   "failedToLoadLimits": "Failed to load daily limits",
   "failedToSaveLimits": "Failed to save daily limits",
   "failedToDeleteEntry": "Failed to delete food entry",
+  "lastUsedWeight": "Last used weight",
   
   "dateFormat": {
     "weekday": "long",

@@ -1,5 +1,5 @@
 import { openDB, DBSchema, IDBPDatabase } from 'idb';
-import { FoodEntry, DailyLimits, FoodCache } from './types';
+import { FoodEntry, DailyLimits } from './types';
 
 interface DailyLimitsRecord extends DailyLimits {
   id: string;
@@ -14,11 +14,6 @@ interface NutriLoopDB extends DBSchema {
   dailyLimits: {
     key: string;
     value: DailyLimitsRecord;
-  };
-  foodCache: {
-    key: string;
-    value: FoodCache;
-    indexes: { 'by-name': string };
   };
 }
 
@@ -41,12 +36,6 @@ class DatabaseService {
           db.createObjectStore('dailyLimits', {
             keyPath: 'id',
           });
-
-          // Food cache store
-          const cacheStore = db.createObjectStore('foodCache', {
-            keyPath: 'id',
-          });
-          cacheStore.createIndex('by-name', 'name');
         }
 
         if (oldVersion < 2) {
@@ -96,10 +85,37 @@ class DatabaseService {
       return limits;
     }
     return {
+      // Macros
       calories: 2000,
       fat: 65,
       protein: 150,
       carbs: 250,
+      
+      // Minerals (based on general RDI)
+      sodium: 2300,
+      potassium: 3500,
+      calcium: 1000,
+      magnesium: 400,
+      iron: 18,
+      zinc: 15,
+      
+      // Vitamins (based on general RDI)
+      vitaminA: 900,
+      vitaminC: 90,
+      vitaminD: 20,
+      vitaminE: 15,
+      vitaminK: 120,
+      vitaminB1: 1.2,
+      vitaminB6: 1.7,
+      vitaminB12: 2.4,
+      
+      // Others
+      cholesterol: 300,
+      sugar: 50,
+      saturatedFat: 20,
+      transFat: 2,
+      omega3: 1.6,
+      omega6: 17
     };
   }
 
@@ -107,23 +123,6 @@ class DatabaseService {
     await this.init();
     const record: DailyLimitsRecord = { ...limits, id: 'default' };
     await this.db!.put('dailyLimits', record);
-  }
-
-  async getCachedFood(name: string): Promise<FoodCache | undefined> {
-    await this.init();
-    const foods = await this.db!.getAllFromIndex('foodCache', 'by-name', name.toLowerCase());
-    return foods[0];
-  }
-
-  async cacheFood(food: Omit<FoodCache, 'id' | 'lastUsed'>): Promise<void> {
-    await this.init();
-    const cached: FoodCache = {
-      ...food,
-      id: crypto.randomUUID(),
-      name: food.name.toLowerCase(),
-      lastUsed: new Date(),
-    };
-    await this.db!.put('foodCache', cached);
   }
 
   async getAllFoodEntries(): Promise<FoodEntry[]> {

@@ -5,13 +5,19 @@ import { useTranslation } from 'react-i18next';
 import { Card, CardContent, CardHeader, CardTitle } from './ui/card';
 import { Button } from './ui/button';
 import { Input } from './ui/input';
-import { DailyLimits } from '@/lib/types';
+import { DailyLimits, NutritionInfo } from '@/lib/types';
 import { db } from '@/lib/db';
 import { Settings, Save } from 'lucide-react';
+import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from './ui/accordion';
 
 interface DailyLimitsProps {
   initialLimits: DailyLimits;
   onLimitsUpdated: () => void;
+}
+
+interface NutrientField {
+  key: keyof NutritionInfo;
+  unit: string;
 }
 
 export function DailyLimitsSettings({ initialLimits, onLimitsUpdated }: DailyLimitsProps) {
@@ -19,7 +25,41 @@ export function DailyLimitsSettings({ initialLimits, onLimitsUpdated }: DailyLim
   const [limits, setLimits] = useState<DailyLimits>(initialLimits);
   const [isSaving, setIsSaving] = useState(false);
 
-  // Update local state when initial limits change
+  const categories: Record<string, NutrientField[]> = {
+    macros: [
+      { key: 'calories', unit: t('kcal') },
+      { key: 'fat', unit: t('grams') },
+      { key: 'protein', unit: t('grams') },
+      { key: 'carbs', unit: t('grams') }
+    ],
+    minerals: [
+      { key: 'sodium', unit: t('mg') },
+      { key: 'potassium', unit: t('mg') },
+      { key: 'calcium', unit: t('mg') },
+      { key: 'magnesium', unit: t('mg') },
+      { key: 'iron', unit: t('mg') },
+      { key: 'zinc', unit: t('mg') }
+    ],
+    vitamins: [
+      { key: 'vitaminA', unit: 'μg' },
+      { key: 'vitaminC', unit: t('mg') },
+      { key: 'vitaminD', unit: 'μg' },
+      { key: 'vitaminE', unit: t('mg') },
+      { key: 'vitaminK', unit: 'μg' },
+      { key: 'vitaminB1', unit: t('mg') },
+      { key: 'vitaminB6', unit: t('mg') },
+      { key: 'vitaminB12', unit: 'μg' }
+    ],
+    others: [
+      { key: 'cholesterol', unit: t('mg') },
+      { key: 'sugar', unit: t('grams') },
+      { key: 'saturatedFat', unit: t('grams') },
+      { key: 'transFat', unit: t('grams') },
+      { key: 'omega3', unit: t('grams') },
+      { key: 'omega6', unit: t('grams') }
+    ]
+  };
+
   useEffect(() => {
     setLimits(initialLimits);
   }, [initialLimits]);
@@ -37,12 +77,22 @@ export function DailyLimitsSettings({ initialLimits, onLimitsUpdated }: DailyLim
   };
 
   const handleInputChange = (field: keyof DailyLimits, value: string) => {
-    const numValue = parseFloat(value);
-    if (!isNaN(numValue) && numValue >= 0) {
-      setLimits(prev => ({
-        ...prev,
-        [field]: numValue,
-      }));
+    // Allow empty string and valid numeric inputs (including single decimal point)
+    if (value === '' || value === '.' || /^\d*\.?\d*$/.test(value)) {
+      if (value === '' || value === '.') {
+        setLimits(prev => ({
+          ...prev,
+          [field]: 0,
+        }));
+      } else {
+        const numValue = parseFloat(value);
+        if (!isNaN(numValue) && numValue >= 0) {
+          setLimits(prev => ({
+            ...prev,
+            [field]: numValue,
+          }));
+        }
+      }
     }
   };
 
@@ -54,66 +104,57 @@ export function DailyLimitsSettings({ initialLimits, onLimitsUpdated }: DailyLim
           {t('dailyLimits')}
         </CardTitle>
       </CardHeader>
-      <CardContent className="space-y-4">
-        <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-          <div>
-            <label htmlFor="calories" className="block text-sm font-medium mb-1">
-              {t('calories')} ({t('kcal')})
-            </label>
-            <Input
-              id="calories"
-              type="number"
-              value={limits.calories}
-              onChange={(e) => handleInputChange('calories', e.target.value)}
-              min="0"
-              step="1"
-            />
-          </div>
-          
-          <div>
-            <label htmlFor="fat" className="block text-sm font-medium mb-1">
-              {t('fat')} ({t('grams')})
-            </label>
-            <Input
-              id="fat"
-              type="number"
-              value={limits.fat}
-              onChange={(e) => handleInputChange('fat', e.target.value)}
-              min="0"
-              step="0.1"
-            />
-          </div>
+      <CardContent>
+        <Accordion type="multiple" defaultValue={['macros']} className="space-y-4">
+          {Object.entries(categories).map(([category, nutrients]) => (
+            <AccordionItem key={category} value={category}>
+              <AccordionTrigger className="text-lg font-semibold">
+                {t(category)}
+              </AccordionTrigger>
+              <AccordionContent>
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 pt-4">
+                  {nutrients.map((nutrient) => (
+                    <div key={nutrient.key}>
+                      <label htmlFor={nutrient.key} className="block text-sm font-medium mb-1">
+                        {t(nutrient.key)} ({nutrient.unit})
+                      </label>
+                      <Input
+                        id={nutrient.key}
+                        type="text"
+                        inputMode="decimal"
+                        value={limits[nutrient.key]?.toString() || '0'}
+                        onChange={(e) => handleInputChange(nutrient.key, e.target.value)}
+                        onKeyDown={(e) => {
+                          // Allow: backspace, delete, tab, escape, enter, decimal point
+                          if (
+                            e.key === 'Backspace' ||
+                            e.key === 'Delete' ||
+                            e.key === 'Tab' ||
+                            e.key === 'Escape' ||
+                            e.key === 'Enter' ||
+                            e.key === '.' ||
+                            e.key === 'ArrowLeft' ||
+                            e.key === 'ArrowRight' ||
+                            e.key === 'ArrowUp' ||
+                            e.key === 'ArrowDown'
+                          ) {
+                            return;
+                          }
+                          // Block non-numeric keys
+                          if (!/[0-9]/.test(e.key)) {
+                            e.preventDefault();
+                          }
+                        }}
+                      />
+                    </div>
+                  ))}
+                </div>
+              </AccordionContent>
+            </AccordionItem>
+          ))}
+        </Accordion>
 
-          <div>
-            <label htmlFor="protein" className="block text-sm font-medium mb-1">
-              {t('protein')} ({t('grams')})
-            </label>
-            <Input
-              id="protein"
-              type="number"
-              value={limits.protein}
-              onChange={(e) => handleInputChange('protein', e.target.value)}
-              min="0"
-              step="0.1"
-            />
-          </div>
-
-          <div>
-            <label htmlFor="carbs" className="block text-sm font-medium mb-1">
-              {t('carbs')} ({t('grams')})
-            </label>
-            <Input
-              id="carbs"
-              type="number"
-              value={limits.carbs}
-              onChange={(e) => handleInputChange('carbs', e.target.value)}
-              min="0"
-              step="0.1"
-            />
-          </div>
-        </div>
-
-        <Button onClick={handleSave} disabled={isSaving} className="w-full">
+        <Button onClick={handleSave} disabled={isSaving} className="w-full mt-6">
           {isSaving ? (
             <>
               <Save className="mr-2 h-4 w-4" />

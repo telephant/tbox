@@ -1,6 +1,6 @@
 import { type ClassValue, clsx } from "clsx";
 import { twMerge } from "tailwind-merge";
-import { FoodEntry, DailyLimits, DailyProgress } from "./types";
+import { FoodEntry, DailyLimits, DailyProgress, NutritionInfo } from "./types";
 
 export function cn(...inputs: ClassValue[]) {
   return twMerge(clsx(inputs));
@@ -23,22 +23,57 @@ export function calculateDailyProgress(
   foodEntries: FoodEntry[],
   limits: DailyLimits
 ): DailyProgress {
-  const consumed = foodEntries.reduce(
-    (total, entry) => ({
-      calories: total.calories + entry.nutrition.calories,
-      fat: total.fat + entry.nutrition.fat,
-      protein: total.protein + entry.nutrition.protein,
-      carbs: total.carbs + entry.nutrition.carbs,
-    }),
-    { calories: 0, fat: 0, protein: 0, carbs: 0 }
-  );
-
-  const percentage = {
-    calories: Math.round((consumed.calories / limits.calories) * 100),
-    fat: Math.round((consumed.fat / limits.fat) * 100),
-    protein: Math.round((consumed.protein / limits.protein) * 100),
-    carbs: Math.round((consumed.carbs / limits.carbs) * 100),
+  // Initialize consumed with all nutrients set to 0
+  const initialConsumed: NutritionInfo = {
+    // Macros
+    calories: 0,
+    fat: 0,
+    protein: 0,
+    carbs: 0,
+    
+    // Minerals
+    sodium: 0,
+    potassium: 0,
+    calcium: 0,
+    magnesium: 0,
+    iron: 0,
+    zinc: 0,
+    
+    // Vitamins
+    vitaminA: 0,
+    vitaminC: 0,
+    vitaminD: 0,
+    vitaminE: 0,
+    vitaminK: 0,
+    vitaminB1: 0,
+    vitaminB6: 0,
+    vitaminB12: 0,
+    
+    // Others
+    cholesterol: 0,
+    sugar: 0,
+    saturatedFat: 0,
+    transFat: 0,
+    omega3: 0,
+    omega6: 0
   };
+
+  // Sum up all nutrients from food entries
+  const consumed = foodEntries.reduce((total, entry) => {
+    const nutrition = entry.nutrition;
+    return Object.keys(total).reduce((acc, key) => {
+      const nutrientKey = key as keyof NutritionInfo;
+      acc[nutrientKey] = total[nutrientKey] + (nutrition[nutrientKey] || 0);
+      return acc;
+    }, { ...total });
+  }, initialConsumed);
+
+  // Calculate percentage for all nutrients
+  const percentage = Object.keys(consumed).reduce((acc, key) => {
+    const nutrientKey = key as keyof NutritionInfo;
+    acc[nutrientKey] = Math.round((consumed[nutrientKey] / (limits[nutrientKey] || 1)) * 100);
+    return acc;
+  }, { ...initialConsumed });
 
   return {
     consumed,
@@ -58,5 +93,8 @@ export function formatNutritionValue(value: number, unit: string): string {
   if (unit === 'kcal') {
     return `${Math.round(value)} ${unit}`;
   }
-  return `${value.toFixed(1)}g`;
+  if (unit === 'μg' || unit === 'mg') {
+    return `${value.toFixed(1)} ${unit}`;
+  }
+  return `${value.toFixed(1)}${unit}`;
 }

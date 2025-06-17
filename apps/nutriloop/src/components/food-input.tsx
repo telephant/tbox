@@ -9,22 +9,78 @@ import { Card, CardContent, CardHeader, CardTitle } from './ui/card';
 import { nutritionService } from '@/lib/openai';
 import { db } from '@/lib/db';
 import { getTodayDateString, formatNutritionValue } from '@/lib/utils';
-import { Plus, Loader2, Eye, Check } from 'lucide-react';
-import { NutritionInfo } from '@/lib/types';
+import { Plus, Loader2, Eye } from 'lucide-react';
+import { NutritionInfo, Unit } from '@/lib/types';
+import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from './ui/accordion';
 
 interface FoodInputProps {
   onFoodAdded: () => void;
+}
+
+interface NutrientField {
+  key: keyof NutritionInfo;
+  unit: string;
 }
 
 export function FoodInput({ onFoodAdded }: FoodInputProps) {
   const { t } = useTranslation();
   const [foodName, setFoodName] = useState('');
   const [weight, setWeight] = useState('');
-  const [unit, setUnit] = useState<'g' | 'ml'>('g');
+  const [unit, setUnit] = useState<Unit>('g' as Unit);
   const [isLoading, setIsLoading] = useState(false);
   const [isPreviewLoading, setIsPreviewLoading] = useState(false);
   const [error, setError] = useState('');
   const [previewNutrition, setPreviewNutrition] = useState<NutritionInfo | null>(null);
+
+  const categories: Record<string, NutrientField[]> = {
+    macros: [
+      { key: 'calories', unit: t('kcal') },
+      { key: 'fat', unit: t('grams') },
+      { key: 'protein', unit: t('grams') },
+      { key: 'carbs', unit: t('grams') }
+    ],
+    minerals: [
+      { key: 'sodium', unit: t('mg') },
+      { key: 'potassium', unit: t('mg') },
+      { key: 'calcium', unit: t('mg') },
+      { key: 'magnesium', unit: t('mg') },
+      { key: 'iron', unit: t('mg') },
+      { key: 'zinc', unit: t('mg') }
+    ],
+    vitamins: [
+      { key: 'vitaminA', unit: 'μg' },
+      { key: 'vitaminC', unit: t('mg') },
+      { key: 'vitaminD', unit: 'μg' },
+      { key: 'vitaminE', unit: t('mg') },
+      { key: 'vitaminK', unit: 'μg' },
+      { key: 'vitaminB1', unit: t('mg') },
+      { key: 'vitaminB6', unit: t('mg') },
+      { key: 'vitaminB12', unit: 'μg' }
+    ],
+    others: [
+      { key: 'cholesterol', unit: t('mg') },
+      { key: 'sugar', unit: t('grams') },
+      { key: 'saturatedFat', unit: t('grams') },
+      { key: 'transFat', unit: t('grams') },
+      { key: 'omega3', unit: t('grams') },
+      { key: 'omega6', unit: t('grams') }
+    ]
+  };
+
+  const handleInputChange = (field: string, value: string) => {
+    if (field === 'foodName') {
+      setFoodName(value);
+      setPreviewNutrition(null);
+    } else if (field === 'weight') {
+      if (value === '' || value === '.' || /^\d*\.?\d*$/.test(value)) {
+        setWeight(value);
+        setPreviewNutrition(null);
+      }
+    } else if (field === 'unit') {
+      setUnit(value as Unit);
+      setPreviewNutrition(null);
+    }
+  };
 
   const handlePreview = async () => {
     if (!foodName.trim() || !weight.trim()) {
@@ -99,21 +155,6 @@ export function FoodInput({ onFoodAdded }: FoodInputProps) {
     }
   };
 
-  // Clear preview when inputs change
-  const handleInputChange = (field: 'name' | 'weight' | 'unit', value: string) => {
-    if (field === 'name') {
-      setFoodName(value);
-    } else if (field === 'weight') {
-      setWeight(value);
-    } else if (field === 'unit') {
-      setUnit(value as 'g' | 'ml');
-    }
-    // Clear preview when inputs change
-    if (previewNutrition) {
-      setPreviewNutrition(null);
-    }
-  };
-
   return (
     <Card>
       <CardHeader>
@@ -125,15 +166,14 @@ export function FoodInput({ onFoodAdded }: FoodInputProps) {
       <CardContent>
         <form onSubmit={handleSubmit} className="space-y-4">
           <div>
-            <label htmlFor="food-name" className="block text-sm font-medium mb-1">
+            <label htmlFor="foodName" className="block text-sm font-medium mb-1">
               {t('foodName')}
             </label>
             <Input
-              id="food-name"
-              type="text"
+              id="foodName"
               placeholder={t('foodNamePlaceholder')}
               value={foodName}
-              onChange={(e) => handleInputChange('name', e.target.value)}
+              onChange={(e) => handleInputChange('foodName', e.target.value)}
               disabled={isLoading || isPreviewLoading}
             />
           </div>
@@ -145,13 +185,31 @@ export function FoodInput({ onFoodAdded }: FoodInputProps) {
             <div className="flex gap-2">
               <Input
                 id="weight"
-                type="number"
+                type="text"
+                inputMode="decimal"
                 placeholder={t('weightPlaceholder')}
                 value={weight}
                 onChange={(e) => handleInputChange('weight', e.target.value)}
+                onKeyDown={(e) => {
+                  if (
+                    e.key === 'Backspace' ||
+                    e.key === 'Delete' ||
+                    e.key === 'Tab' ||
+                    e.key === 'Escape' ||
+                    e.key === 'Enter' ||
+                    e.key === '.' ||
+                    e.key === 'ArrowLeft' ||
+                    e.key === 'ArrowRight' ||
+                    e.key === 'ArrowUp' ||
+                    e.key === 'ArrowDown'
+                  ) {
+                    return;
+                  }
+                  if (!/[0-9]/.test(e.key)) {
+                    e.preventDefault();
+                  }
+                }}
                 disabled={isLoading || isPreviewLoading}
-                min="0"
-                step="0.1"
                 className="flex-1"
               />
               <Select
@@ -162,56 +220,19 @@ export function FoodInput({ onFoodAdded }: FoodInputProps) {
               >
                 <option value="g">{t('grams')}</option>
                 <option value="ml">{t('milliliters')}</option>
+                <option value="piece">{t('pieces')}</option>
               </Select>
             </div>
           </div>
 
-          {/* Preview Nutrition Display */}
-          {previewNutrition && (
-            <div className="p-4 bg-green-50 border border-green-200 rounded-lg dark:bg-green-900/20 dark:border-green-800">
-              <h4 className="font-medium text-green-800 dark:text-green-200 mb-2 flex items-center gap-2">
-                <Check className="h-4 w-4" />
-                {t('nutritionPreview')}
-              </h4>
-              <div className="grid grid-cols-2 sm:grid-cols-4 gap-2 text-sm">
-                <div className="text-center">
-                  <div className="font-medium text-green-700 dark:text-green-300">
-                    {formatNutritionValue(previewNutrition.calories, 'kcal')}
-                  </div>
-                  <div className="text-green-600 dark:text-green-400">{t('calories')}</div>
-                </div>
-                <div className="text-center">
-                  <div className="font-medium text-green-700 dark:text-green-300">
-                    {formatNutritionValue(previewNutrition.fat, 'g')}
-                  </div>
-                  <div className="text-green-600 dark:text-green-400">{t('fat')}</div>
-                </div>
-                <div className="text-center">
-                  <div className="font-medium text-green-700 dark:text-green-300">
-                    {formatNutritionValue(previewNutrition.protein, 'g')}
-                  </div>
-                  <div className="text-green-600 dark:text-green-400">{t('protein')}</div>
-                </div>
-                <div className="text-center">
-                  <div className="font-medium text-green-700 dark:text-green-300">
-                    {formatNutritionValue(previewNutrition.carbs, 'g')}
-                  </div>
-                  <div className="text-green-600 dark:text-green-400">{t('carbs')}</div>
-                </div>
-              </div>
-            </div>
-          )}
-
-          {error && (
-            <div className="text-red-600 text-sm">{error}</div>
-          )}
+          {error && <p className="text-sm text-destructive">{error}</p>}
 
           <div className="flex gap-2">
             <Button
               type="button"
               variant="outline"
               onClick={handlePreview}
-              disabled={isLoading || isPreviewLoading || !foodName.trim() || !weight.trim()}
+              disabled={isLoading || isPreviewLoading}
               className="flex-1"
             >
               {isPreviewLoading ? (
@@ -227,11 +248,7 @@ export function FoodInput({ onFoodAdded }: FoodInputProps) {
               )}
             </Button>
 
-            <Button
-              type="submit"
-              disabled={isLoading || isPreviewLoading}
-              className="flex-1"
-            >
+            <Button type="submit" disabled={isLoading || isPreviewLoading} className="flex-1">
               {isLoading ? (
                 <>
                   <Loader2 className="mr-2 h-4 w-4 animate-spin" />
@@ -245,6 +262,33 @@ export function FoodInput({ onFoodAdded }: FoodInputProps) {
               )}
             </Button>
           </div>
+
+          {previewNutrition && (
+            <Card>
+              <CardHeader>
+                <CardTitle>{t('nutritionPreview')}</CardTitle>
+              </CardHeader>
+              <CardContent>
+                <Accordion type="single" collapsible className="w-full">
+                  {Object.entries(categories).map(([category, nutrients]) => (
+                    <AccordionItem key={category} value={category}>
+                      <AccordionTrigger>{t(category)}</AccordionTrigger>
+                      <AccordionContent>
+                        <div className="grid grid-cols-2 gap-2">
+                          {nutrients.map(({ key, unit }) => (
+                            <div key={key} className="flex justify-between">
+                              <span>{t(key)}</span>
+                              <span>{formatNutritionValue(previewNutrition[key as keyof NutritionInfo], unit)}</span>
+                            </div>
+                          ))}
+                        </div>
+                      </AccordionContent>
+                    </AccordionItem>
+                  ))}
+                </Accordion>
+              </CardContent>
+            </Card>
+          )}
         </form>
       </CardContent>
     </Card>
