@@ -104,7 +104,7 @@ export function Dashboard() {
           <div className="flex justify-between items-center mb-4">
             <div className="flex-1"></div>
             <div className="text-center">
-              <h1 className="text-3xl font-bold bg-gradient-to-r from-blue-400 via-blue-500 to-indigo-600 bg-clip-text text-transparent mb-2">
+              <h1 className="text-3xl font-bold text-gray-900 dark:text-white mb-2">
                 {t('appName')}
               </h1>
               <p className="text-gray-600 dark:text-gray-400">

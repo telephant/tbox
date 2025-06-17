@@ -1,10 +1,7 @@
 import type { NextConfig } from "next";
 
 const nextConfig: NextConfig = {
-  // Empty config for now
-  output: 'standalone',
-  experimental: {
-  },
+  /* config options here */
 };
 
 export default nextConfig;
