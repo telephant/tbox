@@ -1,6 +1,6 @@
 import type { NextConfig } from "next";
 
-const deployment = process.env.DEPLOYMENT || 'vercel';
+const deployment = process.env.NEXT_PUBLIC_DEPLOYMENT || 'vercel';
 
 let nextConfig: NextConfig = {}
 switch (deployment) {
