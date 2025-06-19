@@ -1,6 +1,6 @@
-import { openDB, DBSchema, IDBPDatabase, deleteDB } from 'idb';
+import { openDB, DBSchema, IDBPDatabase } from 'idb';
 import { FoodEntry, DailyLimits } from './types';
-import { DB_VERSION, DEFAULT_NUTRITION_LIMITS } from '@/contants';
+import { DEFAULT_NUTRITION_LIMITS } from '@/contants';
 
 interface DailyLimitsRecord extends DailyLimits {
   id: string;
