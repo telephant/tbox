@@ -129,7 +129,7 @@ For solids (g), use standard weight-based nutritional values.
         throw new Error('No response from OpenAI');
       }
 
-      let jsonStr = content.trim()
+      const jsonStr = content.trim()
           .replace(/^```json\s*/, '')  // trim ```json if have any
           .replace(/```$/, '');
 
