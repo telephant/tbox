@@ -1,6 +1,6 @@
-import { openDB, DBSchema, IDBPDatabase } from 'idb';
+import { openDB, DBSchema, IDBPDatabase, deleteDB } from 'idb';
 import { FoodEntry, DailyLimits } from './types';
-import { DEFAULT_NUTRITION_LIMITS } from '@/contants';
+import { DB_VERSION, DEFAULT_NUTRITION_LIMITS } from '@/contants';
 
 interface DailyLimitsRecord extends DailyLimits {
   id: string;
@@ -24,7 +24,7 @@ class DatabaseService {
   async init(): Promise<void> {
     if (this.db) return;
 
-    this.db = await openDB<NutriLoopDB>('nutriloop-db', 2, {
+    this.db = await openDB<NutriLoopDB>('nutriloop-db-2', 1, {
       upgrade(db, oldVersion) {
         if (oldVersion < 1) {
           // Food entries store
@@ -84,8 +84,8 @@ class DatabaseService {
       // Extract only the DailyLimits fields, excluding the id
       const { ...limits } = record;
       return {
-        ...limits,
         ...DEFAULT_NUTRITION_LIMITS,
+        ...limits,
       };
     }
     return DEFAULT_NUTRITION_LIMITS;
