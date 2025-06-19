@@ -83,10 +83,8 @@ const config = {
   			sm: 'calc(var(--radius) - 4px)'
   		},
   		fontFamily: {
-  			sans: [
-  				'var(--font-sans)',
-                    ...defaultTheme.fontFamily.sans
-                ]
+  			sans: ['var(--font-sans)', ...defaultTheme.fontFamily.sans],
+  			title: ['var(--font-cg)', ...defaultTheme.fontFamily.sans],
   		},
   		keyframes: {
   			'accordion-down': {

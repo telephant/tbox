@@ -1,33 +1,40 @@
-import { ThemeToggle } from "@/components/theme-toggle"
+import Link from "next/link"
 import { Button } from "@/components/ui/button"
+import { SpaceParticles } from "@/components/space-particles"
 
-export default function Home() {
+export default function HomePage() {
   return (
-    <main className="min-h-screen bg-background p-8">
-      <div className="container mx-auto">
-        <div className="flex justify-end mb-8">
-          <ThemeToggle />
-        </div>
-        <div className="max-w-2xl mx-auto space-y-8">
-          <h1 className="text-4xl font-bold bg-gradient-to-r from-primary to-purple-400 bg-clip-text text-transparent">
-            Welcome to Your Modern Purple App
+    <main className="relative min-h-screen flex flex-col items-center justify-center gap-16 p-8 bg-gradient-to-br from-background/50 to-background">
+      <SpaceParticles />
+      {/* Logo and Slogan Section */}
+      <section className="text-center space-y-6 relative z-10">
+        <div className="relative">
+          <h1 className="font-title text-6xl md:text-7xl font-bold tracking-tight">
+            <span className="bg-gradient-to-r from-primary-gradient-from to-primary-gradient-to bg-clip-text text-transparent inline-block hover:scale-105 transition-transform duration-300">
+              CL
+            </span>
+            <span className="bg-gradient-to-r from-primary-gradient-from to-primary-gradient-to bg-clip-text text-transparent inline-block hover:scale-105 transition-transform duration-300 ml-2">
+              Gen
+            </span>
           </h1>
-          <p className="text-lg text-muted-foreground">
-            This is a beautiful app with a gradient purple theme that supports both light and dark modes.
-          </p>
-          <div className="flex gap-4">
-            <Button className="bg-primary text-primary-foreground hover:bg-primary/90">
-              Primary Button
-            </Button>
-            <Button 
-              variant="secondary"
-              className="bg-secondary text-secondary-foreground hover:bg-secondary/80"
-            >
-              Secondary Button
-            </Button>
-          </div>
+          <div className="absolute -inset-x-8 -inset-y-4 bg-gradient-to-r from-primary-gradient-from/20 to-primary-gradient-to/20 blur-2xl -z-10" />
         </div>
-      </div>
+        <p className="text-xl md:text-2xl text-muted-foreground max-w-2xl leading-relaxed">
+          Create personalized cover letters in minutes. Stand out from the crowd with AI-powered professional writing.
+        </p>
+      </section>
+
+      {/* Generator Button Section */}
+      <section className="text-center relative z-10">
+        <Link href="/generator">
+          <Button 
+            size="lg" 
+            className="text-lg px-8 py-6 transition-all duration-300 hover:scale-105 hover:shadow-lg"
+          >
+            Create Your Cover Letter
+          </Button>
+        </Link>
+      </section>
     </main>
   )
 }
