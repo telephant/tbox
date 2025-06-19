@@ -255,12 +255,12 @@ export function FoodInput({ onFoodAdded }: FoodInputProps) {
               {isLoading ? (
                 <>
                   <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-                  {t('adding')}
+                  {t('Adding')}
                 </>
               ) : (
                 <>
                   <Plus className="mr-2 h-4 w-4" />
-                  {t('add')}
+                  {t('Add')}
                 </>
               )}
             </Button>

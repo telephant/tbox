@@ -1,5 +1,6 @@
 import { openDB, DBSchema, IDBPDatabase } from 'idb';
 import { FoodEntry, DailyLimits } from './types';
+import { DEFAULT_NUTRITION_LIMITS } from '@/contants';
 
 interface DailyLimitsRecord extends DailyLimits {
   id: string;
@@ -82,45 +83,17 @@ class DatabaseService {
     if (record) {
       // Extract only the DailyLimits fields, excluding the id
       const { ...limits } = record;
-      return limits;
+      return {
+        ...limits,
+        ...DEFAULT_NUTRITION_LIMITS,
+      };
     }
-    return {
-      // Macros
-      calories: 2000,
-      fat: 65,
-      protein: 150,
-      carbs: 250,
-      
-      // Minerals (based on general RDI)
-      sodium: 2300,
-      potassium: 3500,
-      calcium: 1000,
-      magnesium: 400,
-      iron: 18,
-      zinc: 15,
-      
-      // Vitamins (based on general RDI)
-      vitaminA: 900,
-      vitaminC: 90,
-      vitaminD: 20,
-      vitaminE: 15,
-      vitaminK: 120,
-      vitaminB1: 1.2,
-      vitaminB6: 1.7,
-      vitaminB12: 2.4,
-      
-      // Others
-      cholesterol: 300,
-      sugar: 50,
-      saturatedFat: 20,
-      transFat: 2,
-      omega3: 1.6,
-      omega6: 17
-    };
+    return DEFAULT_NUTRITION_LIMITS;
   }
 
   async setDailyLimits(limits: DailyLimits): Promise<void> {
     await this.init();
+
     const record: DailyLimitsRecord = { ...limits, id: 'default' };
     await this.db!.put('dailyLimits', record);
   }

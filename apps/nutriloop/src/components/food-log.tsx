@@ -131,7 +131,7 @@ export function FoodLog({ entries, onEntryDeleted }: FoodLogProps) {
                 </Button>
               </div>
 
-              <Accordion type="single" collapsible className="border-t border-gray-200 dark:border-gray-700">
+              <Accordion type="single" collapsible>
                 <AccordionItem value="details" className="border-b-0">
                   <AccordionTrigger>
                     {t('moreDetails')}

@@ -129,7 +129,11 @@ For solids (g), use standard weight-based nutritional values.
         throw new Error('No response from OpenAI');
       }
 
-      const nutrition = JSON.parse(content) as NutritionInfo;
+      let jsonStr = content.trim()
+          .replace(/^```json\s*/, '')  // trim ```json if have any
+          .replace(/```$/, '');
+
+      const nutrition = JSON.parse(jsonStr) as NutritionInfo;
       
       // Validate the response has all required fields
       const requiredFields = Object.keys(this.getDefaultNutrition());
