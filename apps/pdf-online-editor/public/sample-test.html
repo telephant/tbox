@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Test Document</title>
+    <style>
+        body { font-family: Arial, sans-serif; padding: 20px; }
+        h1 { color: #333; }
+        p { line-height: 1.6; }
+    </style>
+</head>
+<body>
+    <h1>Sample Test Document</h1>
+    <p>This is a test document to verify the PDF generation functionality works correctly.</p>
+    <p>The document contains multiple paragraphs with different content to test text extraction and HTML conversion.</p>
+    <h2>Features Being Tested</h2>
+    <ul>
+        <li>HTML to PDF conversion</li>
+        <li>Text extraction and formatting</li>
+        <li>Server-side generation with Puppeteer</li>
+        <li>Clean PDF output without website background</li>
+    </ul>
+    <p>Generated at: <span id="timestamp"></span></p>
+    <script>
+        document.getElementById('timestamp').textContent = new Date().toISOString();
+    </script>
+</body>
+</html>

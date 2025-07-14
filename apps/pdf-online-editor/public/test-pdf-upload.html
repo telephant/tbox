@@ -1,0 +1,292 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>PDF Upload Test</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 800px;
+            margin: 40px auto;
+            padding: 20px;
+            background: #f5f5f5;
+        }
+        .container {
+            background: white;
+            padding: 30px;
+            border-radius: 10px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+        .upload-area {
+            border: 2px dashed #ddd;
+            border-radius: 8px;
+            padding: 40px;
+            text-align: center;
+            margin: 20px 0;
+            transition: border-color 0.3s;
+        }
+        .upload-area:hover {
+            border-color: #007bff;
+        }
+        .upload-area.dragover {
+            border-color: #007bff;
+            background: #f8f9fa;
+        }
+        input[type="file"] {
+            margin: 10px 0;
+        }
+        button {
+            background: #007bff;
+            color: white;
+            border: none;
+            padding: 12px 24px;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 16px;
+            margin: 10px;
+        }
+        button:hover {
+            background: #0056b3;
+        }
+        button:disabled {
+            background: #ccc;
+            cursor: not-allowed;
+        }
+        .result {
+            margin: 20px 0;
+            padding: 15px;
+            border-radius: 6px;
+            display: none;
+        }
+        .success {
+            background: #d4edda;
+            border: 1px solid #c3e6cb;
+            color: #155724;
+        }
+        .error {
+            background: #f8d7da;
+            border: 1px solid #f5c6cb;
+            color: #721c24;
+        }
+        .progress {
+            background: #d1ecf1;
+            border: 1px solid #bee5eb;
+            color: #0c5460;
+        }
+        pre {
+            background: #f8f9fa;
+            padding: 10px;
+            border-radius: 4px;
+            overflow-x: auto;
+            font-size: 12px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>PDF Upload & Processing Test</h1>
+        <p>Test the complete PDF upload and processing workflow</p>
+        
+        <div class="upload-area" id="uploadArea">
+            <p>📄 Drop a PDF file here or click to select</p>
+            <input type="file" id="fileInput" accept=".pdf" style="display: none;">
+            <button onclick="document.getElementById('fileInput').click()">Select PDF File</button>
+        </div>
+        
+        <div id="fileInfo" style="display: none;">
+            <h3>Selected File:</h3>
+            <p id="fileName"></p>
+            <p id="fileSize"></p>
+            <button id="uploadBtn" onclick="uploadFile()">Upload & Convert to HTML</button>
+        </div>
+        
+        <div id="result" class="result"></div>
+        
+        <div id="testButtons" style="display: none;">
+            <h3>Test PDF Export:</h3>
+            <button onclick="testPdfExport()">Test PDF Export</button>
+            <button onclick="testServerHealthCheck()">Test Server Health</button>
+        </div>
+    </div>
+
+    <script>
+        let selectedFile = null;
+        let htmlContent = null;
+
+        // Setup drag and drop
+        const uploadArea = document.getElementById('uploadArea');
+        const fileInput = document.getElementById('fileInput');
+        const fileInfo = document.getElementById('fileInfo');
+        const result = document.getElementById('result');
+        const testButtons = document.getElementById('testButtons');
+
+        uploadArea.addEventListener('click', () => fileInput.click());
+        uploadArea.addEventListener('dragover', (e) => {
+            e.preventDefault();
+            uploadArea.classList.add('dragover');
+        });
+        uploadArea.addEventListener('dragleave', () => {
+            uploadArea.classList.remove('dragover');
+        });
+        uploadArea.addEventListener('drop', (e) => {
+            e.preventDefault();
+            uploadArea.classList.remove('dragover');
+            const files = e.dataTransfer.files;
+            if (files.length > 0 && files[0].type === 'application/pdf') {
+                handleFile(files[0]);
+            }
+        });
+
+        fileInput.addEventListener('change', (e) => {
+            if (e.target.files.length > 0) {
+                handleFile(e.target.files[0]);
+            }
+        });
+
+        function handleFile(file) {
+            selectedFile = file;
+            document.getElementById('fileName').textContent = `Name: ${file.name}`;
+            document.getElementById('fileSize').textContent = `Size: ${(file.size / 1024 / 1024).toFixed(2)} MB`;
+            fileInfo.style.display = 'block';
+            result.style.display = 'none';
+        }
+
+        async function uploadFile() {
+            if (!selectedFile) {
+                showResult('error', 'No file selected');
+                return;
+            }
+
+            showResult('progress', 'Uploading and converting PDF...');
+            
+            const formData = new FormData();
+            formData.append('file', selectedFile);
+            
+            try {
+                const response = await fetch('/api/convert', {
+                    method: 'POST',
+                    body: formData
+                });
+
+                const data = await response.json();
+
+                if (response.ok && data.html) {
+                    htmlContent = data.html;
+                    showResult('success', `✅ PDF converted successfully!
+                    
+Conversion Details:
+• Original filename: ${data.originalFilename}
+• Converted at: ${new Date(data.convertedAt).toLocaleString()}
+• Processing time: ${data.processingTime}ms
+• Conversion ID: ${data.conversionId}
+• Asset count: ${data.assetCount}
+• HTML size: ${(new Blob([data.html]).size / 1024).toFixed(2)} KB
+
+The HTML content is now ready for editing and PDF export.`);
+                    testButtons.style.display = 'block';
+                } else {
+                    showResult('error', `❌ Conversion failed: ${data.error || response.statusText}`);
+                }
+            } catch (error) {
+                showResult('error', `❌ Upload error: ${error.message}`);
+            }
+        }
+
+        async function testPdfExport() {
+            if (!htmlContent) {
+                showResult('error', 'No HTML content available. Please upload and convert a PDF first.');
+                return;
+            }
+
+            showResult('progress', 'Testing PDF export...');
+            
+            try {
+                const response = await fetch('/api/generate-pdf', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({
+                        html: htmlContent,
+                        options: {
+                            filename: `test-export-${Date.now()}.pdf`,
+                            format: 'A4',
+                            orientation: 'portrait',
+                            margin: 10
+                        }
+                    })
+                });
+
+                const data = await response.json();
+
+                if (data.success && data.pdfData) {
+                    // Convert base64 to blob and download
+                    const binaryString = atob(data.pdfData);
+                    const bytes = new Uint8Array(binaryString.length);
+                    for (let i = 0; i < binaryString.length; i++) {
+                        bytes[i] = binaryString.charCodeAt(i);
+                    }
+                    const blob = new Blob([bytes], { type: 'application/pdf' });
+                    
+                    const url = URL.createObjectURL(blob);
+                    const link = document.createElement('a');
+                    link.href = url;
+                    link.download = data.filename;
+                    document.body.appendChild(link);
+                    link.click();
+                    document.body.removeChild(link);
+                    URL.revokeObjectURL(url);
+                    
+                    showResult('success', `✅ PDF export successful!
+                    
+Export Details:
+• Filename: ${data.filename}
+• PDF size: ~${Math.round(data.pdfData.length * 0.75 / 1024)} KB
+• Format: A4 Portrait
+• The PDF has been downloaded to your Downloads folder.
+
+🎉 Complete workflow test PASSED! The application is working correctly.`);
+                } else {
+                    showResult('error', `❌ PDF export failed: ${data.error}`);
+                }
+            } catch (error) {
+                showResult('error', `❌ PDF export error: ${error.message}`);
+            }
+        }
+
+        async function testServerHealthCheck() {
+            try {
+                showResult('progress', 'Checking server health...');
+                
+                const response = await fetch('/api/generate-pdf', {
+                    method: 'GET'
+                });
+                
+                const data = await response.json();
+                
+                if (response.ok) {
+                    showResult('success', `✅ Server health check passed!
+                    
+Server Status:
+• Status: ${data.status}
+• Service: ${data.service}
+• Timestamp: ${data.timestamp}
+
+All APIs are working correctly.`);
+                } else {
+                    showResult('error', `❌ Server health check failed: ${response.status}`);
+                }
+            } catch (error) {
+                showResult('error', `❌ Server health check error: ${error.message}`);
+            }
+        }
+
+        function showResult(type, message) {
+            result.className = `result ${type}`;
+            result.innerHTML = `<pre>${message}</pre>`;
+            result.style.display = 'block';
+        }
+    </script>
+</body>
+</html>

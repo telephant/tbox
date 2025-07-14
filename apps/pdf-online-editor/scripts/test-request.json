@@ -1,0 +1,9 @@
+{
+  "html": "<h1>Port Consistency Test</h1><p>Server and client are now on the same port (3000)!</p><div>✅ API Working</div>",
+  "options": {
+    "filename": "port-test.pdf",
+    "format": "A4",
+    "orientation": "portrait",
+    "margin": 10
+  }
+}

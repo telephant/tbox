@@ -1,0 +1,9 @@
+---
+description: 
+globs: 
+alwaysApply: false
+---
+- use `pnpm` as package manager, and use `pnpm add *` for installing package instead of modifying the `package.json` mannually.
+- write docs and comments in English
+- make the code and logic clean and easy to read and maintain
+- comment only when nessesary 

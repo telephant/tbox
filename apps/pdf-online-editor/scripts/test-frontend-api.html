@@ -1,0 +1,227 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Test Frontend API Calls</title>
+    <style>
+        body { font-family: Arial, sans-serif; margin: 20px; }
+        .test-section { margin: 20px 0; padding: 15px; border: 1px solid #ddd; border-radius: 5px; }
+        .success { color: green; }
+        .error { color: red; }
+        .info { color: blue; }
+        button { padding: 10px 15px; margin: 5px; background: #007bff; color: white; border: none; border-radius: 3px; cursor: pointer; }
+        button:hover { background: #0056b3; }
+        pre { background: #f8f9fa; padding: 10px; border-radius: 3px; overflow-x: auto; }
+    </style>
+</head>
+<body>
+    <h1>PDF Generation API Test</h1>
+    <p class="info">This page tests the server-side PDF generation API from the frontend.</p>
+    
+    <div class="test-section">
+        <h2>Health Check Test</h2>
+        <button onclick="testHealth()">Test API Health</button>
+        <div id="health-result"></div>
+    </div>
+    
+    <div class="test-section">
+        <h2>PDF Generation Test</h2>
+        <button onclick="testPdfGeneration()">Generate Test PDF</button>
+        <div id="pdf-result"></div>
+    </div>
+    
+    <div class="test-section">
+        <h2>Mock Server PDF Service Test</h2>
+        <button onclick="testServerPdfService()">Test ServerPdfService Class</button>
+        <div id="service-result"></div>
+    </div>
+
+    <script>
+        async function testHealth() {
+            const resultDiv = document.getElementById('health-result');
+            resultDiv.innerHTML = '<p class="info">Testing API health...</p>';
+            
+            try {
+                const response = await fetch('/api/generate-pdf', {
+                    method: 'GET',
+                });
+                
+                const data = await response.json();
+                
+                if (response.ok) {
+                    resultDiv.innerHTML = `
+                        <p class="success">✅ API Health Check Successful!</p>
+                        <pre>${JSON.stringify(data, null, 2)}</pre>
+                    `;
+                } else {
+                    resultDiv.innerHTML = `<p class="error">❌ API Health Check Failed: ${response.status}</p>`;
+                }
+            } catch (error) {
+                resultDiv.innerHTML = `<p class="error">❌ Health Check Error: ${error.message}</p>`;
+            }
+        }
+        
+        async function testPdfGeneration() {
+            const resultDiv = document.getElementById('pdf-result');
+            resultDiv.innerHTML = '<p class="info">Generating PDF...</p>';
+            
+            const testHtml = \`
+                <div style="font-family: Arial; padding: 20px;">
+                    <h1>Frontend API Test PDF</h1>
+                    <p>This PDF was generated from the frontend using the server-side API.</p>
+                    <div style="margin: 20px 0; padding: 15px; border: 1px solid #ddd; border-radius: 5px;">
+                        <h2>Test Results:</h2>
+                        <ul>
+                            <li>✅ Server running on consistent port (3000)</li>
+                            <li>✅ Frontend making API calls to correct endpoint</li>
+                            <li>✅ Puppeteer Chrome detection working</li>
+                            <li>✅ PDF generation successful</li>
+                        </ul>
+                    </div>
+                    <p style="margin-top: 20px; font-size: 12px; color: #666;">
+                        Generated at: \${new Date().toISOString()}
+                    </p>
+                </div>
+            \`;
+            
+            try {
+                const response = await fetch('/api/generate-pdf', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({
+                        html: testHtml,
+                        options: {
+                            filename: 'frontend-test.pdf',
+                            format: 'A4',
+                            orientation: 'portrait',
+                            margin: 10
+                        }
+                    })
+                });
+                
+                const data = await response.json();
+                
+                if (data.success && data.pdfData) {
+                    // Convert base64 to blob and download
+                    const binaryString = atob(data.pdfData);
+                    const bytes = new Uint8Array(binaryString.length);
+                    for (let i = 0; i < binaryString.length; i++) {
+                        bytes[i] = binaryString.charCodeAt(i);
+                    }
+                    const blob = new Blob([bytes], { type: 'application/pdf' });
+                    
+                    const url = URL.createObjectURL(blob);
+                    const link = document.createElement('a');
+                    link.href = url;
+                    link.download = data.filename;
+                    document.body.appendChild(link);
+                    link.click();
+                    document.body.removeChild(link);
+                    URL.revokeObjectURL(url);
+                    
+                    resultDiv.innerHTML = \`
+                        <p class="success">✅ PDF Generated and Downloaded Successfully!</p>
+                        <p>Filename: \${data.filename}</p>
+                        <p>PDF Size: \${Math.round(data.pdfData.length * 0.75)} bytes</p>
+                    \`;
+                } else {
+                    resultDiv.innerHTML = \`<p class="error">❌ PDF Generation Failed: \${data.error}</p>\`;
+                }
+            } catch (error) {
+                resultDiv.innerHTML = \`<p class="error">❌ PDF Generation Error: \${error.message}</p>\`;
+            }
+        }
+        
+        async function testServerPdfService() {
+            const resultDiv = document.getElementById('service-result');
+            resultDiv.innerHTML = '<p class="info">Testing ServerPdfService class...</p>';
+            
+            // Mock the ServerPdfService class (simplified version for testing)
+            class TestServerPdfService {
+                async generatePdf(htmlContent, options = {}) {
+                    try {
+                        const response = await fetch('/api/generate-pdf', {
+                            method: 'POST',
+                            headers: {
+                                'Content-Type': 'application/json',
+                            },
+                            body: JSON.stringify({
+                                html: htmlContent,
+                                options,
+                            }),
+                        });
+
+                        if (!response.ok) {
+                            const errorData = await response.json();
+                            throw new Error(errorData.error || \`HTTP \${response.status}: \${response.statusText}\`);
+                        }
+
+                        const result = await response.json();
+
+                        if (!result.success) {
+                            throw new Error(result.error || 'Server PDF generation failed');
+                        }
+
+                        // Simulate download
+                        const binaryString = atob(result.pdfData);
+                        const bytes = new Uint8Array(binaryString.length);
+                        for (let i = 0; i < binaryString.length; i++) {
+                            bytes[i] = binaryString.charCodeAt(i);
+                        }
+                        const blob = new Blob([bytes], { type: 'application/pdf' });
+
+                        const url = URL.createObjectURL(blob);
+                        const link = document.createElement('a');
+                        link.href = url;
+                        link.download = result.filename || options.filename || 'document.pdf';
+                        document.body.appendChild(link);
+                        link.click();
+                        document.body.removeChild(link);
+                        URL.revokeObjectURL(url);
+
+                        return { success: true };
+
+                    } catch (error) {
+                        return {
+                            success: false,
+                            error: error.message,
+                        };
+                    }
+                }
+            }
+            
+            const testHtml = \`
+                <div style="font-family: Arial; padding: 20px;">
+                    <h1>ServerPdfService Test</h1>
+                    <p>This tests the ServerPdfService class functionality.</p>
+                    <p>The service should handle the complete workflow from HTML to downloaded PDF.</p>
+                </div>
+            \`;
+            
+            try {
+                const service = new TestServerPdfService();
+                const result = await service.generatePdf(testHtml, {
+                    filename: 'service-test.pdf',
+                    format: 'A4',
+                    orientation: 'portrait',
+                    margin: 15
+                });
+                
+                if (result.success) {
+                    resultDiv.innerHTML = '<p class="success">✅ ServerPdfService Test Successful! PDF downloaded.</p>';
+                } else {
+                    resultDiv.innerHTML = \`<p class="error">❌ ServerPdfService Test Failed: \${result.error}</p>\`;
+                }
+            } catch (error) {
+                resultDiv.innerHTML = \`<p class="error">❌ ServerPdfService Test Error: \${error.message}</p>\`;
+            }
+        }
+        
+        // Auto-run health check on page load
+        window.onload = function() {
+            testHealth();
+        };
+    </script>
+</body>
+</html>
