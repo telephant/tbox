@@ -45,14 +45,14 @@ export default function ParagraphToolbar({
   };
 
   return (
-    <div className="flex items-center space-x-2 px-3 py-2 bg-gray-50 border-b border-gray-200">
+    <div className="flex items-center space-x-2 px-3 py-2 bg-slate-50 border-b border-slate-200">
       {/* Heading Level */}
       <select
         value={currentHeading}
         onMouseDown={(e) => e.preventDefault()}
         onChange={(e) => handleHeadingChange(e.target.value as HeadingLevel)}
         disabled={disabled}
-        className="px-2 py-1 border border-gray-300 rounded text-sm bg-white disabled:opacity-50"
+        className="px-2 py-1 border border-slate-200 rounded text-sm bg-white disabled:opacity-50"
       >
         {HEADING_OPTIONS.map((option) => (
           <option key={option.value} value={option.value}>

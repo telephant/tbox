@@ -28,7 +28,7 @@ export default function RichTextToolbar({
   disabled = false
 }: RichTextToolbarProps) {
   return (
-    <div className="border border-gray-300 rounded-t-lg overflow-hidden bg-white">
+    <div className="border border-slate-200 rounded-t-lg overflow-hidden bg-white shadow-sm">
       {/* Main formatting toolbar */}
       <TextFormatToolbar
         onFormat={onFormat}

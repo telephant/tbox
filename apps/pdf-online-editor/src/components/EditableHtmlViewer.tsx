@@ -252,67 +252,115 @@ export default function EditableHtmlViewer({ result, onBack }: EditableHtmlViewe
   };
 
   return (
-    <div className={`${isFullscreen ? 'fixed inset-0 z-50 bg-white' : ''}`}>
-      <div className="w-full max-w-6xl mx-auto p-6">
-        {/* Header */}
-        <div className="bg-white rounded-lg shadow-lg p-6 mb-6">
-          <div className="flex items-center justify-between mb-4">
-            <div>
-              <h2 className="text-2xl font-bold text-gray-800">
-                PDF Editor {editingState.hasChanges && <span className="text-green-600">(Modified)</span>}
-              </h2>
-              <p className="text-gray-600">
-                Edit your PDF content and export to PDF when ready
-              </p>
-            </div>
-            
-            <div className="flex space-x-2">
+    <div className={`${isFullscreen ? 'fixed inset-0 z-50 bg-white' : 'min-h-screen bg-gray-50'}`}>
+      <div className="flex h-screen">
+        {/* Sidebar */}
+        <div className="w-80 bg-white border-r border-slate-200 flex flex-col">
+          {/* Header */}
+          <div className="p-6 border-b border-slate-200">
+            <div className="flex items-center justify-between mb-4">
+              <div>
+                <h2 className="text-lg font-bold text-slate-900">
+                  PDF Editor
+                </h2>
+                {editingState.hasChanges && (
+                  <span className="text-sm text-emerald-600 font-medium">● Modified</span>
+                )}
+              </div>
               {!isFullscreen && (
                 <button
                   onClick={onBack}
-                  className="px-4 py-2 bg-gray-500 text-white rounded-lg hover:bg-gray-600 transition-colors"
+                  className="p-2 text-slate-500 hover:text-slate-700 hover:bg-slate-100 rounded-lg transition-colors"
+                  title="Back to upload"
                 >
-                  ← Back
+                  <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10 19l-7-7m0 0l7-7m-7 7h18" />
+                  </svg>
                 </button>
               )}
-              
-              <button
-                onClick={toggleFullscreen}
-                className="px-4 py-2 bg-blue-500 text-white rounded-lg hover:bg-blue-600 transition-colors"
-              >
-                {isFullscreen ? 'Exit Fullscreen' : 'Fullscreen'}
-              </button>
             </div>
           </div>
 
           {/* Controls */}
-          <div className="flex items-center justify-between">
-            <div className="flex space-x-2">
-              <button
-                onClick={handleBrowserPrint}
-                disabled={isExporting}
-                className="px-4 py-2 bg-blue-500 text-white rounded-lg hover:bg-blue-600 transition-colors disabled:opacity-50"
-              >
-                🖨️ Print to PDF
-              </button>
+          <div className="p-6 flex-1">
+            <div className="space-y-4">
+              {/* View Mode Toggle */}
+              <div>
+                <label className="block text-sm font-medium text-slate-700 mb-2">View Mode</label>
+                <div className="flex space-x-2">
+                  <button
+                    onClick={() => setViewMode('edit')}
+                    className={`flex-1 px-3 py-2 rounded-lg text-sm font-medium transition-colors ${
+                      viewMode === 'edit'
+                        ? 'bg-slate-900 text-white'
+                        : 'bg-slate-100 text-slate-700 hover:bg-slate-200'
+                    }`}
+                  >
+                    📝 Edit
+                  </button>
+                  <button
+                    onClick={() => setViewMode('code')}
+                    className={`flex-1 px-3 py-2 rounded-lg text-sm font-medium transition-colors ${
+                      viewMode === 'code'
+                        ? 'bg-slate-900 text-white'
+                        : 'bg-slate-100 text-slate-700 hover:bg-slate-200'
+                    }`}
+                  >
+                    💻 Code
+                  </button>
+                </div>
+              </div>
+
+              {/* Export Actions */}
+              <div>
+                <label className="block text-sm font-medium text-slate-700 mb-2">Actions</label>
+                <div className="space-y-2">
+                  <button
+                    onClick={handleBrowserPrint}
+                    disabled={isExporting}
+                    className="w-full px-4 py-3 bg-slate-900 text-white rounded-lg hover:bg-slate-800 transition-colors disabled:opacity-50 font-medium flex items-center justify-center space-x-2"
+                  >
+                    <span>🖨️</span>
+                    <span>Print to PDF</span>
+                  </button>
+                  
+                  <button
+                    onClick={toggleFullscreen}
+                    className="w-full px-4 py-2 bg-slate-100 text-slate-700 rounded-lg hover:bg-slate-200 transition-colors text-sm font-medium"
+                  >
+                    {isFullscreen ? '↙️ Exit Fullscreen' : '↗️ Fullscreen'}
+                  </button>
+                </div>
+              </div>
+
+              {/* Usage Tips */}
+              <div className="mt-8">
+                <div className="bg-slate-50 rounded-lg p-4 border border-slate-200">
+                  <h3 className="font-medium text-slate-900 mb-2 flex items-center space-x-2">
+                    <span>💡</span>
+                    <span>How to use</span>
+                  </h3>
+                  <ol className="text-sm text-slate-600 space-y-1 list-decimal list-inside">
+                    <li>Edit content using the toolbar</li>
+                    <li>Click "Print to PDF" when ready</li>
+                    <li>Choose "Save as PDF" in dialog</li>
+                  </ol>
+                </div>
+              </div>
             </div>
           </div>
         </div>
 
-        {/* Content Display */}
-        <div className="bg-white rounded-lg shadow-lg overflow-hidden">
+        {/* Main Content */}
+        <div className="flex-1 flex flex-col">
           {viewMode === 'edit' ? (
-            <div className="border">
-              <div className="bg-blue-50 px-4 py-2 text-sm text-blue-700 border-b">
-                📝 Edit your PDF content using the toolbar above. Click "Print to PDF" when finished.
+            <div className="flex-1 bg-white border border-slate-200 rounded-tl-lg overflow-hidden flex flex-col">
+              <div className="bg-blue-50 px-4 py-2 text-sm text-blue-700 border-b border-slate-200">
+                📝 Edit your PDF content using the toolbar below. Your changes are saved automatically.
               </div>
               <div 
                 ref={editableRef}
-                className="overflow-auto"
-                style={{ 
-                  height: isFullscreen ? 'calc(100vh - 200px)' : '70vh',
-                  maxHeight: isFullscreen ? 'none' : '70vh'
-                }}
+                className="flex-1 overflow-hidden"
               >
                 <RichTextEditor
                   initialHtml={editingState.editableHtml}
@@ -323,18 +371,12 @@ export default function EditableHtmlViewer({ result, onBack }: EditableHtmlViewe
               </div>
             </div>
           ) : (
-            <div className="border">
-              <div className="bg-purple-50 px-4 py-2 text-sm text-purple-700 border-b">
-                🔍 View and edit the HTML source code of your PDF content
+            <div className="flex-1 bg-white border border-slate-200 rounded-tl-lg overflow-hidden flex flex-col">
+              <div className="bg-purple-50 px-4 py-2 text-sm text-purple-700 border-b border-slate-200">
+                💻 View and edit the HTML source code of your PDF content
               </div>
-              <div 
-                className="overflow-auto"
-                style={{ 
-                  height: isFullscreen ? 'calc(100vh - 200px)' : '70vh',
-                  maxHeight: isFullscreen ? 'none' : '70vh'
-                }}
-              >
-                <pre className="p-4 text-sm font-mono bg-gray-50 overflow-auto">
+              <div className="h-full overflow-auto">
+                <pre className="p-4 text-sm font-mono bg-slate-50 h-full overflow-auto">
                   <code className="language-html whitespace-pre-wrap">
                     {editingState.editableHtml}
                   </code>
@@ -342,25 +384,6 @@ export default function EditableHtmlViewer({ result, onBack }: EditableHtmlViewe
               </div>
             </div>
           )}
-        </div>
-
-        {/* Simple usage tip */}
-        <div className="mt-6 bg-green-50 border border-green-200 rounded-lg p-4">
-          <div className="flex items-start space-x-3">
-            <div className="flex-shrink-0">
-              <div className="w-8 h-8 bg-green-100 rounded-full flex items-center justify-center">
-                <span className="text-green-600 font-bold">💡</span>
-              </div>
-            </div>
-            <div>
-              <h3 className="font-medium text-green-800 mb-1">How to use:</h3>
-              <ol className="text-sm text-green-700 space-y-1 list-decimal list-inside">
-                <li>Edit your PDF content using the formatting toolbar</li>
-                <li>Click "Print to PDF" button when finished</li>
-                <li>Choose "Save as PDF" in your browser's print dialog</li>
-              </ol>
-            </div>
-          </div>
         </div>
       </div>
     </div>

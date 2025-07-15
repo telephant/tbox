@@ -486,7 +486,7 @@ const RichTextEditor = React.memo(function RichTextEditor({
   }, [executeCommand]);
 
   return (
-    <div className={`rich-text-editor ${className}`}>
+    <div className={`rich-text-editor flex flex-col h-full ${className}`}>
       <RichTextToolbar
         activeFormats={activeFormats}
         onFormat={executeCommand}
@@ -498,11 +498,11 @@ const RichTextEditor = React.memo(function RichTextEditor({
         disabled={!isReady}
       />
       
-      <div className="border border-gray-300 border-t-0 rounded-b-lg bg-white">
+      <div className="flex-1 border border-slate-200 border-t-0 rounded-b-lg bg-white">
         <iframe
           ref={iframeRef}
           src="about:blank"
-          className="w-full h-96 border-0 bg-white"
+          className="w-full h-full border-0 bg-white"
           title="Rich Text Editor"
           sandbox="allow-same-origin allow-scripts"
           onLoad={() => {
@@ -518,8 +518,8 @@ const RichTextEditor = React.memo(function RichTextEditor({
       </div>
       
       {!isReady && (
-        <div className="absolute inset-0 bg-gray-100 flex items-center justify-center">
-          <div className="text-gray-500">Loading editor...</div>
+        <div className="absolute inset-0 bg-slate-100 flex items-center justify-center">
+          <div className="text-slate-500">Loading editor...</div>
         </div>
       )}
     </div>

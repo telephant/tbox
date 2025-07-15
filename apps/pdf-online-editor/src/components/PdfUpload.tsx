@@ -92,46 +92,48 @@ export default function PdfUpload({ onConversionComplete, onError }: PdfUploadPr
 
 
   return (
-    <div className="w-full max-w-2xl mx-auto p-6 bg-white rounded-lg shadow-lg">
-      <h2 className="text-2xl font-bold text-gray-800 mb-6 text-center">
+    <div className="w-full max-w-2xl mx-auto p-8 bg-white rounded-2xl shadow-sm border border-slate-200">
+      <h2 className="text-2xl font-bold text-slate-900 mb-8 text-center">
         PDF Online Editor
       </h2>
 
       {/* File Upload Area */}
       <div
         data-testid="upload-area"
-        className={`border-2 border-dashed rounded-lg p-8 text-center transition-colors ${
+        className={`border-2 border-dashed rounded-xl p-12 text-center transition-all duration-200 ${
           isDragOver
-            ? 'border-blue-500 bg-blue-50'
+            ? 'border-slate-400 bg-slate-50 scale-105'
             : selectedFile
-            ? 'border-green-400 bg-green-50'
-            : 'border-gray-300 hover:border-gray-400'
+            ? 'border-emerald-400 bg-emerald-50'
+            : 'border-slate-300 hover:border-slate-400 hover:bg-slate-50'
         }`}
         onDragEnter={handleDragEnter}
         onDragLeave={handleDragLeave}
         onDragOver={handleDragOver}
         onDrop={handleDrop}
       >
-        <div className="mb-4">
+        <div className="mb-6">
           {selectedFile ? (
-            <div className="text-green-600">
-              <svg className="w-12 h-12 mx-auto mb-2" fill="currentColor" viewBox="0 0 20 20">
+            <div className="text-emerald-600">
+              <svg className="w-16 h-16 mx-auto mb-4" fill="currentColor" viewBox="0 0 20 20">
                 <path fillRule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clipRule="evenodd" />
               </svg>
-              <p className="font-semibold">{selectedFile.name}</p>
-              <p className="text-sm text-gray-500">
+              <p className="font-semibold text-lg text-slate-900">{selectedFile.name}</p>
+              <p className="text-sm text-slate-500 mt-1">
                 {(selectedFile.size / (1024 * 1024)).toFixed(2)} MB
               </p>
             </div>
           ) : (
-            <div className="text-gray-400">
-              <svg className="w-12 h-12 mx-auto mb-4" fill="none" stroke="currentColor" viewBox="0 0 48 48">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M28 8H12a4 4 0 00-4 4v20m32-12v8m0 0v8a4 4 0 01-4 4H12a4 4 0 01-4-4v-4m32-4l-3.172-3.172a4 4 0 00-5.656 0L28 28M8 32l9.172-9.172a4 4 0 015.656 0L28 28m0 0l4 4m4-24h8m-4-4v8m-12 4h.02" />
-              </svg>
-              <p className="text-lg font-medium mb-2">
+            <div className="text-slate-400">
+              <div className="w-16 h-16 bg-slate-100 rounded-2xl flex items-center justify-center mx-auto mb-4">
+                <svg className="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
+                </svg>
+              </div>
+              <p className="text-lg font-semibold mb-2 text-slate-700">
                 Drop your PDF file here or click to select
               </p>
-              <p className="text-sm text-gray-500">
+              <p className="text-sm text-slate-500">
                 Maximum file size: 50MB • Ready for editing
               </p>
             </div>
@@ -147,7 +149,7 @@ export default function PdfUpload({ onConversionComplete, onError }: PdfUploadPr
         />
         <label
           htmlFor="file-input"
-          className="inline-block px-6 py-2 bg-blue-500 text-white rounded-lg cursor-pointer hover:bg-blue-600 transition-colors"
+          className="inline-block px-8 py-3 bg-slate-900 text-white rounded-xl cursor-pointer hover:bg-slate-800 transition-all duration-200 font-semibold transform hover:scale-105 shadow-lg"
         >
           Select PDF to Edit
         </label>
@@ -156,19 +158,19 @@ export default function PdfUpload({ onConversionComplete, onError }: PdfUploadPr
 
       {/* Convert Button */}
       {selectedFile && (
-        <div className="mt-6 text-center">
+        <div className="mt-8 text-center">
           <button
             onClick={handleConvert}
             disabled={isUploading}
-            className={`px-8 py-3 rounded-lg font-medium text-white transition-colors ${
+            className={`px-10 py-4 rounded-xl font-semibold text-white transition-all duration-200 shadow-lg transform hover:scale-105 ${
               isUploading
-                ? 'bg-gray-400 cursor-not-allowed'
-                : 'bg-green-500 hover:bg-green-600'
+                ? 'bg-slate-400 cursor-not-allowed'
+                : 'bg-emerald-600 hover:bg-emerald-700'
             }`}
           >
             {isUploading ? (
-              <div className="flex items-center space-x-2">
-                <div className="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin"></div>
+              <div className="flex items-center space-x-3">
+                <div className="w-5 h-5 border-2 border-white border-t-transparent rounded-full animate-spin"></div>
                 <span>Processing...</span>
               </div>
             ) : (
