@@ -12,13 +12,13 @@ export default function PdfUpload({ onConversionComplete, onError }: PdfUploadPr
   const [isUploading, setIsUploading] = useState(false);
   const [isDragOver, setIsDragOver] = useState(false);
   const [selectedFile, setSelectedFile] = useState<File | null>(null);
-  const [options, setOptions] = useState<ConversionOptions>({
+  const options: ConversionOptions = {
     embedFonts: true,
     embedImages: true,
     embedJavascript: true,
     embedOutline: true,
     splitPages: false,
-  });
+  };
 
   const pdfService = new PdfConverterService();
 
@@ -90,14 +90,11 @@ export default function PdfUpload({ onConversionComplete, onError }: PdfUploadPr
     }
   };
 
-  const handleOptionChange = (key: keyof ConversionOptions, value: boolean | number) => {
-    setOptions(prev => ({ ...prev, [key]: value }));
-  };
 
   return (
     <div className="w-full max-w-2xl mx-auto p-6 bg-white rounded-lg shadow-lg">
       <h2 className="text-2xl font-bold text-gray-800 mb-6 text-center">
-        PDF to HTML Converter
+        PDF Online Editor
       </h2>
 
       {/* File Upload Area */}
@@ -135,7 +132,7 @@ export default function PdfUpload({ onConversionComplete, onError }: PdfUploadPr
                 Drop your PDF file here or click to select
               </p>
               <p className="text-sm text-gray-500">
-                Maximum file size: 50MB
+                Maximum file size: 50MB • Ready for editing
               </p>
             </div>
           )}
@@ -152,101 +149,10 @@ export default function PdfUpload({ onConversionComplete, onError }: PdfUploadPr
           htmlFor="file-input"
           className="inline-block px-6 py-2 bg-blue-500 text-white rounded-lg cursor-pointer hover:bg-blue-600 transition-colors"
         >
-          Select PDF File
+          Select PDF to Edit
         </label>
       </div>
 
-      {/* Conversion Options */}
-      {selectedFile && (
-        <div className="mt-6 p-4 bg-gray-50 rounded-lg">
-          <h3 className="text-lg font-medium text-gray-800 mb-4">Conversion Options</h3>
-          
-          <div className="grid grid-cols-2 gap-4 mb-4">
-            <label className="flex items-center space-x-2">
-              <input
-                type="checkbox"
-                checked={options.embedFonts}
-                onChange={(e) => handleOptionChange('embedFonts', e.target.checked)}
-                className="rounded"
-              />
-              <span className="text-sm">Embed Fonts</span>
-            </label>
-
-            <label className="flex items-center space-x-2">
-              <input
-                type="checkbox"
-                checked={options.embedImages}
-                onChange={(e) => handleOptionChange('embedImages', e.target.checked)}
-                className="rounded"
-              />
-              <span className="text-sm">Embed Images</span>
-            </label>
-
-            <label className="flex items-center space-x-2">
-              <input
-                type="checkbox"
-                checked={options.embedJavascript}
-                onChange={(e) => handleOptionChange('embedJavascript', e.target.checked)}
-                className="rounded"
-              />
-              <span className="text-sm">Embed JavaScript</span>
-            </label>
-
-            <label className="flex items-center space-x-2">
-              <input
-                type="checkbox"
-                checked={options.embedOutline}
-                onChange={(e) => handleOptionChange('embedOutline', e.target.checked)}
-                className="rounded"
-              />
-              <span className="text-sm">Embed Outline</span>
-            </label>
-
-            <label className="flex items-center space-x-2">
-              <input
-                type="checkbox"
-                checked={options.splitPages}
-                onChange={(e) => handleOptionChange('splitPages', e.target.checked)}
-                className="rounded"
-              />
-              <span className="text-sm">Split Pages</span>
-            </label>
-          </div>
-
-          <div className="grid grid-cols-2 gap-4">
-            <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1">
-                Zoom Level
-              </label>
-              <input
-                type="number"
-                min="0.5"
-                max="3"
-                step="0.1"
-                value={options.zoom || ''}
-                onChange={(e) => handleOptionChange('zoom', e.target.value ? parseFloat(e.target.value) : 1)}
-                placeholder="Auto"
-                className="w-full px-3 py-2 border border-gray-300 rounded-md text-sm"
-              />
-            </div>
-
-            <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1">
-                DPI
-              </label>
-              <input
-                type="number"
-                min="72"
-                max="600"
-                value={options.dpi || ''}
-                onChange={(e) => handleOptionChange('dpi', parseInt(e.target.value) || undefined)}
-                placeholder="Auto"
-                className="w-full px-3 py-2 border border-gray-300 rounded-md text-sm"
-              />
-            </div>
-          </div>
-        </div>
-      )}
 
       {/* Convert Button */}
       {selectedFile && (
@@ -263,10 +169,10 @@ export default function PdfUpload({ onConversionComplete, onError }: PdfUploadPr
             {isUploading ? (
               <div className="flex items-center space-x-2">
                 <div className="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin"></div>
-                <span>Converting...</span>
+                <span>Processing...</span>
               </div>
             ) : (
-              'Convert to HTML'
+              'Start Editing'
             )}
           </button>
         </div>

@@ -30,11 +30,11 @@ export default function ConverterPage() {
         {/* Header */}
         <div className="text-center mb-8">
           <h1 className="text-4xl font-bold text-gray-800 mb-4">
-            PDF to HTML Converter
+            PDF Online Editor
           </h1>
           <p className="text-xl text-gray-600 max-w-2xl mx-auto">
-            Convert your PDF files to clean, responsive HTML with embedded fonts, images, and styling.
-            Perfect for web publishing and document sharing.
+            Edit your PDF files directly in the browser with rich text editing capabilities.
+            Perfect for quick document modifications and instant PDF export.
           </p>
         </div>
 
@@ -50,7 +50,7 @@ export default function ConverterPage() {
                 </div>
                 <div className="ml-3">
                   <h3 className="text-sm font-medium text-red-800">
-                    Conversion Error
+                    Processing Error
                   </h3>
                   <div className="mt-2 text-sm text-red-700">
                     {error}
@@ -88,7 +88,7 @@ export default function ConverterPage() {
         {!conversionResult && (
           <div className="mt-16 max-w-4xl mx-auto">
             <h2 className="text-2xl font-bold text-gray-800 text-center mb-8">
-              Why Choose Our PDF to HTML Converter?
+              Why Choose Our PDF Online Editor?
             </h2>
             
             <div className="grid md:grid-cols-3 gap-8">
@@ -100,7 +100,7 @@ export default function ConverterPage() {
                 </div>
                 <h3 className="text-lg font-semibold text-gray-800 mb-2">Lightning Fast</h3>
                 <p className="text-gray-600">
-                  Convert PDF files to HTML in seconds with our optimized processing engine.
+                  Edit PDF files in seconds with our optimized processing engine.
                 </p>
               </div>
 
@@ -112,7 +112,7 @@ export default function ConverterPage() {
                 </div>
                 <h3 className="text-lg font-semibold text-gray-800 mb-2">High Quality</h3>
                 <p className="text-gray-600">
-                  Preserve fonts, images, and formatting with pixel-perfect conversion quality.
+                  Preserve fonts, images, and formatting with pixel-perfect editing quality.
                 </p>
               </div>
 
@@ -124,32 +124,32 @@ export default function ConverterPage() {
                 </div>
                 <h3 className="text-lg font-semibold text-gray-800 mb-2">Secure & Private</h3>
                 <p className="text-gray-600">
-                  Your files are processed securely and automatically deleted after conversion.
+                  Your files are processed securely and automatically deleted after editing.
                 </p>
               </div>
             </div>
 
             <div className="mt-12 bg-blue-50 rounded-lg p-8">
               <h3 className="text-xl font-semibold text-gray-800 mb-4 text-center">
-                Advanced Conversion Options
+                Advanced Editing Features
               </h3>
               <div className="grid md:grid-cols-2 gap-6">
                 <div>
-                  <h4 className="font-medium text-gray-800 mb-2">Embedding Options</h4>
+                  <h4 className="font-medium text-gray-800 mb-2">Rich Text Features</h4>
                   <ul className="text-sm text-gray-600 space-y-1">
-                    <li>• Embed fonts for consistent display</li>
-                    <li>• Include images directly in HTML</li>
-                    <li>• Preserve JavaScript interactions</li>
-                    <li>• Maintain document outline</li>
+                    <li>• Bold, italic, underline formatting</li>
+                    <li>• Font family and size selection</li>
+                    <li>• Text and background colors</li>
+                    <li>• Paragraph alignment options</li>
                   </ul>
                 </div>
                 <div>
-                  <h4 className="font-medium text-gray-800 mb-2">Output Settings</h4>
+                  <h4 className="font-medium text-gray-800 mb-2">Export Options</h4>
                   <ul className="text-sm text-gray-600 space-y-1">
-                    <li>• Adjustable zoom levels</li>
-                    <li>• Custom DPI settings</li>
-                    <li>• Single page or split pages</li>
-                    <li>• Responsive HTML output</li>
+                    <li>• Direct PDF export via browser</li>
+                    <li>• Maintains original formatting</li>
+                    <li>• Instant preview and edit</li>
+                    <li>• No software installation needed</li>
                   </ul>
                 </div>
               </div>

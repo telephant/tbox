@@ -35,6 +35,8 @@ uploads/file-*
 uploads/*-test.*
 temp-*.txt
 test.pdf
+uploads/
+pdf-output/
 
 # Server logs
 server.log

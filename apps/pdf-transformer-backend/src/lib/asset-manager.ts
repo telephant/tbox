@@ -162,6 +162,26 @@ export class AssetManager {
       `src="${baseUrl}/assets/$1"`
     );
 
+    // Replace background image URLs in CSS
+    modifiedHtml = modifiedHtml.replace(
+      /url\(['"]?([^'"]+\.(png|jpg|jpeg|gif|svg|woff|woff2|ttf|otf|eot))['"]?\)/g,
+      `url("${baseUrl}/assets/$1")`
+    );
+
+    // Replace font URLs in CSS
+    modifiedHtml = modifiedHtml.replace(
+      /url\(['"]?([^'"]+\.(woff|woff2|ttf|otf|eot))['"]?\)/g,
+      `url("${baseUrl}/assets/$1")`
+    );
+
+    // Add base tag to help with relative URLs
+    if (modifiedHtml.includes('<head>')) {
+      modifiedHtml = modifiedHtml.replace(
+        '<head>',
+        `<head><base href="${baseUrl}/">`
+      );
+    }
+
     return modifiedHtml;
   }
 

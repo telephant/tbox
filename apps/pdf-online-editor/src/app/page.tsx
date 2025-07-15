@@ -17,8 +17,8 @@ export default function Home() {
               PDF Online Editor
             </h1>
             <p className="text-xl text-gray-600 max-w-2xl mx-auto">
-              Transform your PDF documents into clean, responsive HTML with our powerful online converter. 
-              Preserve formatting, fonts, and images with pixel-perfect accuracy.
+              Edit your PDF documents directly in the browser with our powerful online editor. 
+              Modify text, formatting, and layout, then export back to PDF instantly.
             </p>
           </div>
 
@@ -30,7 +30,7 @@ export default function Home() {
               <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M7 16a4 4 0 01-.88-7.903A5 5 0 1115.9 6L16 6a5 5 0 011 9.9M9 19l3 3m0 0l3-3m-3 3V10" />
               </svg>
-              Start Converting
+              Start Editing
             </Link>
             <a
               className="rounded-full border border-solid border-gray-300 transition-colors flex items-center justify-center hover:bg-white hover:shadow-md font-medium text-sm sm:text-base h-12 px-8"
@@ -51,7 +51,7 @@ export default function Home() {
             </div>
             <h3 className="text-xl font-semibold text-gray-900 mb-3">Lightning Fast</h3>
             <p className="text-gray-600">
-              Convert PDF files to HTML in seconds with our optimized processing engine powered by pdf2htmlEX.
+              Edit PDF files in seconds with our optimized processing engine powered by pdf2htmlEX.
             </p>
           </div>
 
@@ -63,7 +63,7 @@ export default function Home() {
             </div>
             <h3 className="text-xl font-semibold text-gray-900 mb-3">High Quality</h3>
             <p className="text-gray-600">
-              Preserve fonts, images, and formatting with pixel-perfect conversion quality and embedded resources.
+              Preserve fonts, images, and formatting with pixel-perfect editing quality and embedded resources.
             </p>
           </div>
 
@@ -93,7 +93,7 @@ export default function Home() {
               </div>
               <h3 className="text-lg font-semibold text-gray-900 mb-2">Upload PDF</h3>
               <p className="text-gray-600">
-                Drag and drop your PDF file or click to select. Files up to 50MB are supported.
+                Drag and drop your PDF file or click to select. Files up to 50MB are supported for editing.
               </p>
             </div>
 
@@ -101,9 +101,9 @@ export default function Home() {
               <div className="w-16 h-16 bg-blue-600 rounded-full flex items-center justify-center mx-auto mb-4 text-white text-xl font-bold">
                 2
               </div>
-              <h3 className="text-lg font-semibold text-gray-900 mb-2">Configure Options</h3>
+              <h3 className="text-lg font-semibold text-gray-900 mb-2">Edit Content</h3>
               <p className="text-gray-600">
-                Choose embedding options, zoom level, DPI, and other conversion settings.
+                Use the rich text editor to modify text, formatting, fonts, and layout as needed.
               </p>
             </div>
 
@@ -111,9 +111,9 @@ export default function Home() {
               <div className="w-16 h-16 bg-blue-600 rounded-full flex items-center justify-center mx-auto mb-4 text-white text-xl font-bold">
                 3
               </div>
-              <h3 className="text-lg font-semibold text-gray-900 mb-2">Download HTML</h3>
+              <h3 className="text-lg font-semibold text-gray-900 mb-2">Export PDF</h3>
               <p className="text-gray-600">
-                Preview your converted HTML and download it for use on the web.
+                Export your edited document back to PDF format for sharing or printing.
               </p>
             </div>
           </div>
@@ -122,10 +122,10 @@ export default function Home() {
         {/* CTA Section */}
         <div className="text-center bg-gradient-to-r from-blue-600 to-indigo-600 rounded-2xl p-12 text-white">
           <h2 className="text-3xl font-bold mb-4">
-            Ready to Convert Your PDFs?
+            Ready to Edit Your PDFs?
           </h2>
           <p className="text-xl mb-8 opacity-90">
-            Join thousands of users who trust our PDF to HTML converter for their document needs.
+            Join thousands of users who trust our PDF online editor for their document needs.
           </p>
           <Link
             href="/converter"
@@ -134,7 +134,7 @@ export default function Home() {
             <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M7 16a4 4 0 01-.88-7.903A5 5 0 1115.9 6L16 6a5 5 0 011 9.9M9 19l3 3m0 0l3-3m-3 3V10" />
             </svg>
-            Get Started Now
+            Start Editing Now
           </Link>
         </div>
       </div>
